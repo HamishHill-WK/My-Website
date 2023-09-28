@@ -38,9 +38,29 @@ p {
     margin: 0 auto;
 }
 
-#canvas {
-    margin: 0 auto; /* Center the canvas horizontally */
-    background-color: #000000; /* Set the background color of the canvas */
+#game {
+    text-align: center;
+    position: relative;
+}
+
+#gameCanvas {
+    margin: 0 auto;
+    display: block;
+}
+
+#score {
+    height: 45px;
+    width: 200px;
+    background: #000000;
+    border-radius: 10px;
+    border: 1px solid #5c5656;
+    text-align: center;
+    color: #00bd32;
+    font-size: 2em;
+    font-weight: bolder;
+    position: relative;
+    left: 100px;
+    top: calc(100% + 10px);
 }
 
 #header {

@@ -4,6 +4,15 @@ const scoreElement = document.getElementById('score');
 
 const keys = {};
 
+let aliens = []; // Array to store alien invaders
+let bullets = []; // Array to store bullets fired by the player
+
+let score = 0; // Player's score
+let gameOver = false; // Flag to track if the game is over
+let lastShotTime = 0;
+
+canvas.backgroundColor = '#000000';
+
 document.addEventListener('keydown', function (event) {
     keys[event.key] = true;
     if (event.key === 32 || event.key === ' ') {
@@ -50,18 +59,11 @@ class Bullet extends GameObject {
     }
 
     update() {
-        console.log(" update bullet ");
         this.y += this.dy;
     }
 }
 
 let player = new GameObject(canvas.width / 2, canvas.height - 60, 40, 40, '#FF0000');
-let aliens = []; // Array to store alien invaders
-let bullets = []; // Array to store bullets fired by the player
-let score = 0; // Player's score
-let gameOver = false; // Flag to track if the game is over
-let lastShotTime = 0;
-canvas.backgroundColor = '#000000';
 
 function update() {
     // Update game state
@@ -107,11 +109,12 @@ function drawGameElements() {
 }
 
 function init() {
-    console.log("init");
     canvas.interval = setInterval(update, 1000/ 60);    //set interval of 60 calls per second
 }
 
 function keydown() {
+    const currentTime = Date.now();
+
     if (keys['a']) {
         if (player.x > 0) {
             player.update(-5, 0);
@@ -120,8 +123,12 @@ function keydown() {
         if (player.x + player.width < canvas.width) {
             player.update(5, 0);
         }
-    }  if (keys[' ']) {
+    }
+
+    if (keys[' '] && currentTime - lastShotTime >= 500) {
         bullets.push(new Bullet((player.x + player.width / 2), player.y + 1, 5, 10, '#FFFFFF', -5));
+
+        lastShotTime = currentTime;
     }
 }
 
