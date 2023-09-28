@@ -26,6 +26,7 @@ p {
     margin: 0 auto;
     width: 1000px;
     flex: 1;
+    padding: 20px;
 }
 
 #topbar {
@@ -40,7 +41,6 @@ p {
 
 #game {
     text-align: center;
-    position: relative;
 }
 
 #gameCanvas {

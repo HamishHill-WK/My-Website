@@ -199,7 +199,8 @@ function drawGameElements() {
     }
 }
 
-function init() {
+function init(newScore) {
+    score = newScore;
     spawnShips();
     canvas.interval = setInterval(update, 1000 /  60);    //set interval of 60 calls per second
 }
@@ -230,8 +231,8 @@ function stop() {
 
 function restart() {
     stop();
-    init();
+    init(score);
 }
 
 // Start the game loop
-init();
+init(score);
