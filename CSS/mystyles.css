@@ -89,6 +89,21 @@ p {
     display: none;
 }
 
+#project {
+    border-radius: 10px;
+    border: 1px solid #5c5656;
+    overflow: auto;
+    margin: 0 auto; 
+    margin-top: 20px;
+    width: 25%;
+    height: 25%;
+}
+
+#project-image{
+    width: 100px;
+    height: 100px;
+}
+
 #lives {
     height: 45px;
     width: 200px;
