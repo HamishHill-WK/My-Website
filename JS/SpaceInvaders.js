@@ -1,6 +1,13 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+
 const scoreElement = document.getElementById('score');
+const livesElement = document.getElementById('lives');
+
+const startButton = document.getElementById('start-button');
+const restartButton = document.getElementById('restart-button');
+const gameOverScreen= document.getElementById('game-over-container');
+const gameOverMessage = document.getElementById('game-over-message');
 
 const keys = {};
 
@@ -8,13 +15,17 @@ let aliens = []; // Array to store alien invaders
 let bullets = []; // Array to store bullets fired by the player
 let asteroids = []; //array to store asteroid barrier objects
 
+let playerLives = 3; 
+
 let score = 0; // Player's score
-let gameOver = false; // Flag to track if the game is over
-let lastShotTime = 0;
-let shootDelay = 250;
-let enemyDirection = 1;
-let enemyVerticalSpeed = 5;
+
+let lastShotTime = 0;   //tracks time since last shot for delay
+let shootDelay = 250;   //250 ms between shots
+
+let enemyDirection = 1; //positive for right, -1 for left
+let enemyVerticalSpeed = 10;    
 let enemyHorizontalSpeed = 1;
+let enemyChanceToShoot = 0.0005;
 
 canvas.backgroundColor = '#000000';
 
@@ -28,7 +39,6 @@ document.addEventListener('keydown', function (event) {
 document.addEventListener('keyup', function (event) {
     keys[event.key] = false;
 });
-
 class GameObject {  //base class used for spaceship and bullet 
     constructor(x, y, width, height, colour) {
         this.x = x;
@@ -38,9 +48,9 @@ class GameObject {  //base class used for spaceship and bullet
         this.colour = colour; 
     }
 
-    draw(ctx1) {
-        ctx1.fillStyle = this.colour;
-        ctx1.fillRect(this.x, this.y, this.width, this.height);
+    draw(ctx) {
+        ctx.fillStyle = this.colour;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 
     update(dx, dy) {
@@ -76,7 +86,15 @@ class SpaceShip extends GameObject {
     }
 
     shoot() {
-        this.bullets.push(new Bullet((this.x + this.width / 2), player.y + 1, 4, 8, '#ff7800', 5));
+        this.bullets.push(new Bullet((this.x + this.width / 2), this.y + 1, 4, 8, '#ff7800', 5));
+    }
+
+    draw(ctx) {
+        super.draw(ctx);
+        for (let i = 0; i < this.bullets.length; i++) {
+            this.bullets[i].update();
+            this.bullets[i].draw(ctx);
+        }
     }
 }
 
@@ -125,27 +143,25 @@ class Asteroid {
 let player = new GameObject(canvas.width / 2, canvas.height - 60, 40, 40, '#FF0000');
 
 function update() {
-    if (!gameOver) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);   //clear canvas at the start of the frame
+    ctx.clearRect(0, 0, canvas.width, canvas.height);   //clear canvas at the start of the frame
 
-        keydown();  //get player input
+    keydown();  //get player input
  
-        updateGameState();  //update game variables - game object positions
+    updateGameState();  //update game variables - game object positions
 
-        drawGameElements(); //render game objects
+    drawGameElements(); //render game objects
 
-        checkCollision();   //check for collisions 
+    checkCollision();   //check for collisions 
 
-        updateScoreDisplay();   //update score text
-    } else {
-        // Display game over message or handle game over logic
-        // (e.g., show a "Game Over" message, allow the player to restart)
-        restart();
-    }
+    updateScoreDisplay();   //update score text
 }
 
 function checkCollision() {
-    for (let i = aliens.length -1; i >= 0; i--) {
+    if (aliens.length === 0) {
+        gameWon();
+    }
+
+    for (let i = aliens.length - 1; i >= 0; i--) {
         for (var j = 0; j < bullets.length; j++) {
             if (aliens[i] !== undefined && aliens[i].collision(bullets[j])) {
                 aliens.splice(i, 1);
@@ -153,14 +169,22 @@ function checkCollision() {
                 score += 10;
             }
         }
+        if (aliens[i].y > player.y + 50) {
+            gameOver();
+        }
     }
 
     for (let i = asteroids.length - 1; i >= 0; i--) {
         for (let j = aliens.length; j >= 0; j--) {
             if (aliens[j] !== undefined) {
-                asteroids[i].collision(aliens[j]);
+                if (asteroids[i].collision(aliens[j])) {
+                    asteroids[i].removeOnCollide(aliens[j]);
+                }
                 for (let x = aliens[j].bullets; x >= 0; x--) {
-                    asteroids[i].collision(aliens[j].bullets[x]);
+                    if (asteroids[i].collision(aliens[j].bullets[x])) {
+                        asteroids[i].removeOnCollide(aliens[j].bullets[x]);
+                        aliens[j].bullets[x].splice(x, 1);
+                    }
                 }
             }
         }
@@ -175,6 +199,7 @@ function checkCollision() {
 }
 
 function spawnShips() {
+    aliens = [];
     for (let i = 0; i < 18; i++) {
         for (let j = 0; j < 5; j++) {
             aliens.push(new SpaceShip((i * 40) + 10, (j * 40) + 10, 30, 30, '#005e19', enemyDirection));
@@ -183,8 +208,9 @@ function spawnShips() {
 }
 
 function spawnAsteroids() {
+    asteroids = [];
     for (let i = 0; i < 8; i++) {
-        asteroids.push(new Asteroid((i * 100) + 20, canvas.height - 130, 5, 5, '#e0e0e0', 12));       
+        asteroids.push(new Asteroid((i * 100) + 20, canvas.height - 130, 10, 5, '#e0e0e0', 8));       
     }
 }
 
@@ -214,7 +240,7 @@ function updateGameState() {
             }
 
             for (let i = 0; i < aliens.length; i++) {
-                aliens[i].update(enemyDirection, 0)
+                aliens[i].update(enemyDirection * enemyHorizontalSpeed, 0)
             }
         }
     }
@@ -236,10 +262,19 @@ function updateGameState() {
             }
 
             for (let i = 0; i < aliens.length; i++) {
-                aliens[i].update(enemyDirection, 0)
+                aliens[i].update(enemyDirection * enemyHorizontalSpeed, 0)
             }
         }
     }
+
+    if (aliens !== undefined) {
+        for (let i = aliens.length-1; i >= 0; i--) {
+            if (Math.random() < enemyChanceToShoot) {
+                aliens[i].shoot();
+            }
+        }
+    }
+
 }
 
 function drawGameElements() {
@@ -286,17 +321,44 @@ function stop() {
     clearInterval(canvas.interval);
 }
 
-function restart() {
-    stop();
+function restartlose() {
+    score = 0;
+    gameOverScreen.style.display = 'none';
+    init(score);
+}
+
+function restartWin() {
+    gameOverScreen.style.display = 'none';
     init(score);
 }
 
 function init(newScore) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); 
     score = newScore;
+    bullets = [];
     spawnShips();
     spawnAsteroids();
     canvas.interval = setInterval(update, 1000 / 60);    //set interval of 60 calls per second
 }
 
 // Start the game loop
-init(score);
+function startGame() {
+    init(score);
+    startButton.style.display = 'none';
+}
+
+function gameOver() {
+    stop();
+    restartButton.addEventListener("click", restartlose);
+    gameOverScreen.style.display = 'block';
+    gameOverMessage.textContent = 'GAME OVER';
+}
+
+function gameWon() {
+    stop();
+    restartButton.addEventListener("click", restartWin);
+    gameOverMessage.textContent = 'YOU WON!';
+    gameOverScreen.style.display = 'block';
+}
+
+startButton.addEventListener("click", startGame);
