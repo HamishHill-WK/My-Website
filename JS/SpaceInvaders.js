@@ -16,6 +16,8 @@ let bullets = []; // Array to store bullets fired by the player
 let asteroids = []; //array to store asteroid barrier objects
 
 let playerLives = 3; 
+let playerLasthitTime = 0;
+let playerInvinsibleTime = 5000; //invulnerable for 5 seconds after being hit 
 
 let score = 0; // Player's score
 
@@ -32,13 +34,14 @@ canvas.backgroundColor = '#000000';
 document.addEventListener('keydown', function (event) {
     keys[event.key] = true;
     if (event.key === 32 || event.key === ' ') {
-        event.preventDefault();
+        event.preventDefault(); //stopp page scrolling to bottom when you press space
     }
 });
 
 document.addEventListener('keyup', function (event) {
     keys[event.key] = false;
 });
+
 class GameObject {  //base class used for spaceship and bullet 
     constructor(x, y, width, height, colour) {
         this.x = x;
@@ -82,18 +85,28 @@ class SpaceShip extends GameObject {
     constructor(x, y, width, height, color, dx) {
         super(x, y, width, height, color);
         this.dx = dx;
-        this.bullets = [];
+        this._bullets = [];
     }
 
     shoot() {
-        this.bullets.push(new Bullet((this.x + this.width / 2), this.y + 1, 4, 8, '#ff7800', 5));
+        this._bullets.push(new Bullet((this.x + this.width / 2), this.y + 1, 5, 10, '#ff7800', 5));
     }
 
     draw(ctx) {
         super.draw(ctx);
         for (let i = 0; i < this.bullets.length; i++) {
-            this.bullets[i].update();
-            this.bullets[i].draw(ctx);
+            this._bullets[i].update();
+            this._bullets[i].draw(ctx);
+        }
+    }
+
+    get bullets() {
+        return this._bullets;
+    }
+
+    removeBullet(index) {
+        if (index >= 0 && index < this._bullets.length) {
+            this._bullets.splice(index, 1);
         }
     }
 }
@@ -162,55 +175,55 @@ function checkCollision() {
     }
 
     for (let i = aliens.length - 1; i >= 0; i--) {
-        for (var j = 0; j < bullets.length; j++) {
-            if (aliens[i] !== undefined && aliens[i].collision(bullets[j])) {
+        if (aliens[i] !== undefined) {
+            for (var j = 0; j < bullets.length; j++) {
+                if (aliens[i].collision(bullets[j])) {
+                    aliens.splice(i, 1);
+                    bullets.splice(j, 1);
+                    score += 10;
+                }
+            }
+
+            if (aliens[i].collision(player)) {
                 aliens.splice(i, 1);
-                bullets.splice(j, 1);
+                killPlayer();
                 score += 10;
             }
-        }
-        if (aliens[i].y > player.y + 50) {
-            gameOver();
+
+            for (let x = aliens[i].bullets.length - 1; x >= 0; x--) {
+                if (aliens[i].bullets[x].collision(player)) {
+                    aliens[j].removeBullet(x);
+                    killPlayer();
+                }
+            }
+
+            if (aliens[i].y > player.y + 50) {
+                gameOver();
+            }
         }
     }
 
     for (let i = asteroids.length - 1; i >= 0; i--) {
-        for (let j = aliens.length; j >= 0; j--) {
+        for (let j = aliens.length - 1; j >= 0; j--) {
             if (aliens[j] !== undefined) {
                 if (asteroids[i].collision(aliens[j])) {
                     asteroids[i].removeOnCollide(aliens[j]);
                 }
-                for (let x = aliens[j].bullets; x >= 0; x--) {
+                for (let x = aliens[j].bullets.length - 1; x >= 0; x--) {
                     if (asteroids[i].collision(aliens[j].bullets[x])) {
                         asteroids[i].removeOnCollide(aliens[j].bullets[x]);
-                        aliens[j].bullets[x].splice(x, 1);
+                        aliens[j].removeBullet(x);
                     }
                 }
             }
         }
 
-        for (let j = bullets.length; j >= 0; j--) {
+        for (let j = bullets.length - 1; j >= 0; j--) {
             if (asteroids[i].collision(bullets[j])) {
                 asteroids[i].removeOnCollide(bullets[j]);
                 bullets.splice(j, 1);
             }
         }
-    }
-}
-
-function spawnShips() {
-    aliens = [];
-    for (let i = 0; i < 18; i++) {
-        for (let j = 0; j < 5; j++) {
-            aliens.push(new SpaceShip((i * 40) + 10, (j * 40) + 10, 30, 30, '#005e19', enemyDirection));
-        }
-    }
-}
-
-function spawnAsteroids() {
-    asteroids = [];
-    for (let i = 0; i < 8; i++) {
-        asteroids.push(new Asteroid((i * 100) + 20, canvas.height - 130, 10, 5, '#e0e0e0', 8));       
     }
 }
 
@@ -284,12 +297,12 @@ function drawGameElements() {
 
     player.draw(ctx);
 
-    for (let i = 0; i < bullets.length; i++) {
-        bullets[i].draw(ctx);
-    }
-
     for (let i = 0; i < aliens.length; i++) {
         aliens[i].draw(ctx);
+    }
+
+    for (let i = 0; i < bullets.length; i++) {
+        bullets[i].draw(ctx);
     }
 
     for (let i = 0; i < asteroids.length; i++) {
@@ -317,6 +330,20 @@ function keydown() {
     }
 }
 
+function killPlayer() {
+    const currentTime = Date.now();
+    if (currentTime - playerLasthitTime >= playerInvinsibleTime) {
+        playerLives -= 1;
+        if (playerLives < 0) {
+            livesElement.textContent = `Lives: DEAD`;
+            gameOver();
+            return;
+        }
+        livesElement.textContent = `Lives: ${playerLives}`;
+        playerLasthitTime = currentTime;
+    }
+}
+
 function stop() {
     clearInterval(canvas.interval);
 }
@@ -330,6 +357,21 @@ function restartlose() {
 function restartWin() {
     gameOverScreen.style.display = 'none';
     init(score);
+}
+function spawnShips() {
+    aliens = [];
+    for (let i = 0; i < 18; i++) {
+        for (let j = 0; j < 5; j++) {
+            aliens.push(new SpaceShip((i * 40) + 10, (j * 40) + 10, 30, 30, '#005e19', enemyDirection));
+        }
+    }
+}
+
+function spawnAsteroids() {
+    asteroids = [];
+    for (let i = 0; i < 8; i++) {
+        asteroids.push(new Asteroid((i * 100) + 20, canvas.height - 130, 8, 5, '#e0e0e0', 8));
+    }
 }
 
 function init(newScore) {
