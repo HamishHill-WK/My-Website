@@ -4,7 +4,7 @@
 
 body {
     font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 13px;
+    font-size: .8em;
     color:#333;
     background-color: gray;
     display: flex;
@@ -24,43 +24,13 @@ p {
 
 #wrapper {
     margin: 0 auto;
-    width: 1000px;
-    flex: 1;
-    padding: 20px;
-}
-
-#topbar {
-
+    width: 100%;
 }
 
 #headerwrap {
-    width: 1000px;
-    float: left;
+    width: 100%;
     margin: 0 auto;
-}
-
-#game {
     text-align: center;
-}
-
-#gameCanvas {
-    margin: 0 auto;
-    display: block;
-}
-
-#score {
-    height: 45px;
-    width: 200px;
-    background: #000000;
-    border-radius: 10px;
-    border: 1px solid #5c5656;
-    text-align: center;
-    color: #00bd32;
-    font-size: 2em;
-    font-weight: bolder;
-    position: relative;
-    left: 100px;
-    top: calc(100% + 10px);
 }
 
 #header {
@@ -75,9 +45,14 @@ p {
     -webkit-text-stroke: 0.75px #edebeb;
 }
 
+#topbar {
+    justify-content: space-between; /* Space items horizontally */
+    align-items: center; /* Center items vertically */
+}
+
 #navigationwrap {
-    width: 1000px;
-    float: left;
+    width: 100%;
+    text-align: center;
 }
 
 #navigation {
@@ -98,9 +73,47 @@ p {
     padding: 10px 10px;
 }
 
-#contentwrap {
-    width: 1000px;
+#game {
+    text-align: center;
+    position: relative;
+}
+
+#gameCanvas {
     margin: 0 auto;
+    display: block;
+}
+
+#score {
+    height: 45px;
+    width: 200px;
+    background: #000000;
+    border-radius: 10px;
+    border: 1px solid #5c5656;
+    text-align: center;
+    color: #00bd32;
+    font-size: 2em;
+    font-weight: bolder;
+    display: inline-block;
+    margin-right: 0px;
+}
+
+#controls {
+    height: 45px;
+    width: 500px;
+    background: #000000;
+    border-radius: 10px;
+    border: 1px solid #5c5656;
+    text-align: center;
+    color: #00bd32;
+    font-size: 2em;
+    font-weight: bolder;
+    display: inline-block;
+}
+
+#contentwrap {
+    width: 50%;
+    margin: 1em auto;
+    height: 50%;
 }
 
 #content {
@@ -108,6 +121,8 @@ p {
     border-radius: 10px;
     border: 1px solid #ebebeb;
     font-size: 1.1em;
+    margin: 0;
+    padding: 0;
 }
 
 #footerwrap {
@@ -124,7 +139,7 @@ p {
 .anav {
     font-family: serif;
     font-size: 2em;
-    color: white;
+    color: #333;
     font-weight: 700;
     -webkit-text-stroke: 0.2px #333;
 }
