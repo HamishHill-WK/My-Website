@@ -1,0 +1,58 @@
+#game {
+    text-align: center;
+    position: relative;
+}
+
+#gameCanvas {
+    margin: 0 auto;
+    display: block;
+}
+
+#start-game-container {
+}
+
+#game-over-container {
+    display: none;
+}
+
+
+#lives {
+    height: 45px;
+    width: 200px;
+    background: #000000;
+    border-radius: 10px;
+    border: 1px solid #5c5656;
+    text-align: center;
+    color: #00bd32;
+    font-size: 2em;
+    font-weight: bolder;
+    display: inline-block;
+    margin-right: 0px;
+}
+
+#score {
+    height: 45px;
+    width: 200px;
+    background: #000000;
+    border-radius: 10px;
+    border: 1px solid #5c5656;
+    text-align: center;
+    color: #00bd32;
+    font-size: 2em;
+    font-weight: bolder;
+    display: inline-block;
+    margin-right: 0px;
+}
+
+#controls {
+    height: 45px;
+    width: 500px;
+    background: #000000;
+    border-radius: 10px;
+    border: 1px solid #5c5656;
+    text-align: center;
+    color: #00bd32;
+    font-size: 2em;
+    font-weight: bolder;
+    display: inline-block;
+}
