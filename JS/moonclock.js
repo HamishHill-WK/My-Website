@@ -18,4 +18,9 @@ function request() {
             console.error('Error:', error);
         });
 }
+function toggleContent(contentId) {
+    const content = document.getElementById(contentId);
+    content.style.display = content.style.display === 'none' ? 'block' : 'none';
+}
+
 request();

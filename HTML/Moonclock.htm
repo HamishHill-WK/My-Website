@@ -4,8 +4,7 @@
     <title>Hamish Hill Developer Portfolio</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../CSS/mystyles.css" />
-    <link rel="stylesheet" type="text/css" href="../CSS/mystyles.css" />
-    <script src="../JS/moonclock.js"></script>
+    <link rel="stylesheet" type="text/css" href="../CSS/moonstyles.css" />
 
 </head>
 <body>
@@ -33,7 +32,7 @@
 
         <section id="moon-current">
             <h2>Current Moon Data</h2>
-            <p>Current data on the moon, including the image below, is supplied by NASA's Moon Phase and Libration API available <a href="https://svs.gsfc.nasa.gov/5048">here'</a></p>
+            <p>Current data on the moon, including the image below, is supplied by NASA's Moon Phase and Libration API available <a href="https://svs.gsfc.nasa.gov/5048" target="_blank">here</a></p>
             <div id="moonwrap">
                 <img id="moonimage" src="../Images/4.png" alt="Description of the image">
             </div>
@@ -46,63 +45,63 @@
 
                     <article id="new-moon">
                         <h3 id="new-moon-title" onclick="toggleContent('new-moon-content')">New Moon</h3>
-                        <div id="new-moon-content">
+                        <div id="new-moon-content" class="moon-phase-content">
                             <p>Fact 1 about the New Moon.</p>
                             <p>Fact 2 about the New Moon.</p>
                         </div>
                     </article>
 
                     <article id="waxing-crescent">
-                        <h3 id="waxing-crescent-title">Waxing Crescent</h3>
-                        <div id="waxing-crescent-content">
+                        <h3 id="waxing-crescent-title" onclick="toggleContent('waxing-crescent-content')">Waxing Crescent</h3>
+                        <div id="waxing-crescent-content" class="moon-phase-content">
                             <p>Fact 1 about the Waxing Crescent Moon.</p>
                             <p>Fact 2 about the Waxing Crescent Moon.</p>
                         </div>
                     </article>
 
                     <article id="first-quarter">
-                        <h3 id="first-quarter-title">First Quarter</h3>
-                        <div id="first-quarter-content">
+                        <h3 id="first-quarter-title" onclick="toggleContent('first-quarter-content')">First Quarter</h3>
+                        <div id="first-quarter-content" class="moon-phase-content">
                             <p>Fact 1 about the First Quarter Moon.</p>
                             <p>Fact 2 about the First Quarter Moon.</p>
                         </div>
                     </article>
 
                     <article id="waxing-gibbous">
-                        <h3 id="waxing-gibbous-title">Waxing Gibbous</h3>
-                        <div id="waxing-gibbous-content">
+                        <h3 id="waxing-gibbous-title" onclick="toggleContent('waxing-gibbous-content')">Waxing Gibbous</h3>
+                        <div id="waxing-gibbous-content" class="moon-phase-content">
                             <p>Fact 1 about the Waxing Gibbous Moon.</p>
                             <p>Fact 2 about the Waxing Gibbous Moon.</p>
                         </div>
                     </article>
 
                     <article id="full-moon">
-                        <h3 id="full-moon-title">Full Moon</h3>
-                        <div id="full-moon-content">
+                        <h3 id="full-moon-title" onclick="toggleContent('full-moon-content')">Full Moon</h3>
+                        <div id="full-moon-content" class="moon-phase-content">
                             <p>Fact 1 about the Full Moon.</p>
                             <p>Fact 2 about the Full Moon.</p>
                         </div>
                     </article>
 
                     <article id="waning-gibbous">
-                        <h3 id="waning-gibbous-title">Waning Gibbous</h3>
-                        <div id="waning-gibbous-content">
+                        <h3 id="waning-gibbous-title"onclick="toggleContent('waning-gibbous-content')">Waning Gibbous</h3>
+                        <div id="waning-gibbous-content" class="moon-phase-content">
                             <p>Fact 1 about the Waning Gibbous Moon.</p>
                             <p>Fact 2 about the Waning Gibbous Moon.</p>
                         </div>
                     </article>
 
                     <article id="third-quarter">
-                        <h3 id="third-quarter-title">Third Quarter</h3>
-                        <div id="third-quarter-content">
+                        <h3 id="third-quarter-title" onclick="toggleContent('third-quarter-content')">Third Quarter</h3>
+                        <div id="third-quarter-content" class="moon-phase-content">
                             <p>Fact 1 about the Third Quarter Moon.</p>
                             <p>Fact 2 about the Third Quarter Moon.</p>
                         </div>
                     </article>
 
                     <article id="waning-crescent">
-                        <h3 id="waning-crescent-title">Waning Crescent</h3>
-                        <div id="waning-crescent-content">
+                        <h3 id="waning-crescent-title" onclick="toggleContent('waning-crescent-content')">Waning Crescent</h3>
+                        <div id="waning-crescent-content" class="moon-phase-content">
                             <p>Fact 1 about the Waning Crescent Moon.</p>
                             <p>Fact 2 about the Waning Crescent Moon.</p>
                         </div>
@@ -110,12 +109,7 @@
                 </div>
             </div>
         </section>
-        <script>
-            function toggleContent(contentId) {
-                const content = document.getElementById(contentId);
-                content.style.display = content.style.display === 'none' ? 'block' : 'none';
-            }
-        </script>
+
     </div>
     <footer>
         <div id="footerwrap">
@@ -127,5 +121,6 @@
             </div>
         </div>
     </footer>
+    <script src="../JS/moonclock.js"></script>
 </body>
 </html>
