@@ -1,4 +1,4 @@
-#moonwrap {
+﻿#moonwrap {
     width: 50%;
     margin: 1em auto;
     height: 50%;
@@ -6,4 +6,33 @@
 
 .moon-phase-content {
     display: none;
+}
+
+/* Default styles for the arrow */
+.phase-title::before {
+    content: ' ►'; /* Right arrow character */
+    display: inline-block;
+    margin-right: 5px;
+    transform: rotate(0deg); /* Default rotation (horizontal) */
+    transition: transform 0.3s; /* Add a smooth transition */
+}
+
+/* Styles for the open state */
+.phase-title.open::before {
+    transform: rotate(90deg); /* Rotate 90 degrees (pointing down) */
+}
+
+.phase-article {
+    border: 1px solid #000;
+}
+
+#moonphases {
+    max-width: 1200px; /* Adjust the maximum width as needed */
+    margin: 0 auto; /* Center the section horizontally */
+    width: 100%; /* Allow the section to take the full width when the window is smaller */
+}
+
+#moon-icon{
+    width: 2em;
+    height: 2em;
 }

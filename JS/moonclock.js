@@ -18,9 +18,15 @@ function request() {
             console.error('Error:', error);
         });
 }
-function toggleContent(contentId) {
-    const content = document.getElementById(contentId);
-    content.style.display = content.style.display === 'none' ? 'block' : 'none';
+function toggleContent(contentID, titleID) {
+    const content = document.getElementById(contentID);
+    const title = document.getElementById(titleID);
+    content.style.display = content.style.display === 'block' ? 'none' : 'block';
+    if (content.style.display === 'none') {
+        title.classList.remove('open'); // Remove the class to rotate the arrow up
+    } else if (content.style.display === 'block') {
+        title.classList.add('open'); // Add the class to rotate the arrow down
+    }
 }
 
 request();
