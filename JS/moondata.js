@@ -74,7 +74,7 @@ function init() {
             const prevData = data[1];
             moonImage.src = currentData.image.url;
             currentIllum.textContent = `Illumination: ${currentData.phase}%`;
-            currentPhase.textContent = "Current phase: " + whichPhase(currentData.phase, prevData.phase);
+            currentPhase.textContent = "Current Phase: " + whichPhase(currentData.phase, prevData.phase);
             currentAge.textContent = `Age: ${currentData.age} days`
             currentDistance.textContent = `Distance from Earth: ${currentData.distance} km`
         })
