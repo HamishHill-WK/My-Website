@@ -21,7 +21,7 @@
             <div id="navigationwrap">
                 <div id="navigation">
                     <nav>
-                        <a class="anav" href="home.htm">Home</a> &nbsp; <a class="anav" href="Contact.htm">Contact Info</a> &nbsp; <a class="anav" href="Projects.htm">Projects</a>
+                        <a class="anav" href="home.html">Home</a> &nbsp; <a class="anav" href="Contact.html">Contact Info</a> &nbsp; <a class="anav" href="Projects.html">Projects</a>
                     </nav>
                 </div>
                 <div id="sociallinks">
@@ -34,7 +34,11 @@
             <h2>Current Moon Data</h2>
             <p>Current data on the moon, including the image below, is supplied by NASA's Moon Phase and Libration API available <a href="https://svs.gsfc.nasa.gov/5048" target="_blank">here</a></p>
             <div id="moonwrap">
-                <img id="moonimage" src="../Images/4.png" alt="Description of the image">
+                <img id="moonimage" src="../Images/Moon/default.png" alt="Loading Moon Data">
+                <p id="current-phase">Phase: </p>
+                <p id="current-illumination">Illumination: </p>
+                <p id="current-age">Age: </p>                
+                <p id="current-distance">Distance from Earth: </p>
             </div>
         </section>
 
@@ -137,6 +141,6 @@
             </div>
         </div>
     </footer>
-    <script src="../JS/moonclock.js"></script>
+    <script src="../JS/moondata.js"></script>
 </body>
 </html>

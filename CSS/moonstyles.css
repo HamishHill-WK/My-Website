@@ -1,25 +1,17 @@
-﻿#moonwrap {
-    width: 50%;
-    margin: 1em auto;
-    height: 50%;
-}
-
-.moon-phase-content {
+﻿.moon-phase-content {
     display: none;
 }
 
-/* Default styles for the arrow */
 .phase-title::before {
-    content: ' ►'; /* Right arrow character */
+    content: ' ►'; 
     display: inline-block;
     margin-right: 5px;
-    transform: rotate(0deg); /* Default rotation (horizontal) */
-    transition: transform 0.3s; /* Add a smooth transition */
+    transform: rotate(0deg); 
+    transition: transform 0.3s; 
 }
 
-/* Styles for the open state */
 .phase-title.open::before {
-    transform: rotate(90deg); /* Rotate 90 degrees (pointing down) */
+    transform: rotate(90deg); 
 }
 
 .phase-article {
@@ -27,12 +19,28 @@
 }
 
 #moonphases {
-    max-width: 1200px; /* Adjust the maximum width as needed */
-    margin: 0 auto; /* Center the section horizontally */
-    width: 100%; /* Allow the section to take the full width when the window is smaller */
+    max-width: 1200px; 
+    margin: 0 auto; 
+    width: 100%; 
 }
 
 #moon-icon{
     width: 2em;
     height: 2em;
+}
+
+#moon-current {
+    background-color: white;
+    max-width: 1200px; 
+    margin: 0 auto; 
+    width: 100%; 
+    text-align: center;
+}
+
+#moonimage {
+    width: 50%;
+    margin: 0;
+    padding: 0;
+    height: 50%;
+    display: inline-block; 
 }
