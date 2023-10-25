@@ -1,0 +1,11 @@
+Sun: https://www.solarsystemscope.com/textures/download/2k_sun.jpg
+Mercury: https://www.solarsystemscope.com/textures/download/2k_mercury.jpg
+Venus: https://www.solarsystemscope.com/textures/download/2k_venus_surface.jpg
+Earth: https://www.solarsystemscope.com/textures/download/2k_earth_daymap.jpg
+Mars: https://www.solarsystemscope.com/textures/download/2k_mars.jpg
+Jupiter: https://www.solarsystemscope.com/textures/download/2k_jupiter.jpg
+Saturn: https://www.solarsystemscope.com/textures/download/2k_saturn.jpg
+Saturn Ring: https://www.solarsystemscope.com/textures/download/2k_saturn_ring_alpha.png
+Uranus: https://www.solarsystemscope.com/textures/download/2k_uranus.jpg
+Neptune: https://www.solarsystemscope.com/textures/download/2k_neptune.jpg
+Stars: https://www.solarsystemscope.com/textures/download/2k_stars.jpg
