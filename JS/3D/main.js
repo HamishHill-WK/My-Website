@@ -2,8 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 0, 310);  
+
 
 //const backgroundColor = new THREE.Color(0xffffff); // Replace with your desired color in hexadecimal format
 //scene.background = backgroundColor;
@@ -14,11 +13,15 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const textureLoader = new THREE.TextureLoader();
 
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000);
+camera.position.set(0, 0, 25); 
+scene.add(camera);
+
 //enables camera controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.listenToKeyEvents(renderer.domElement);
 //controls.target.set(0, 0, 0);
-controls.target.set(0, 0, 0);
+//controls.target.set(0, 0, 0);
 
 const light = new THREE.PointLight(0xffffff, 1000, 4000);
 scene.add(light);
@@ -38,29 +41,44 @@ function onMouseDown(event) {
 	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
 	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-	// Update the raycaster with the mouse coordinates
+	console.log(`camera position: ${camera.position.x}, ${camera.position.y}, ${camera.position.z}`);
+
 	raycaster.setFromCamera(mouse, camera);
-	//raycaster.set
+	console.log(raycaster.ray.origin);
+	console.log(raycaster.ray.direction);
 
-	// Find intersected objects
-	const intersects = raycaster.intersectObjects(scene.children, true);
+	const intersects = raycaster.intersectObjects(scene.children, false);
 
-	const dx = camera.position.x - SunObject.mesh.position.x;
-	const dy = camera.position.y - SunObject.mesh.position.y;
-	const dz = camera.position.z - SunObject.mesh.position.z;
+	//const dx = camera.position.x - SunObject.mesh.position.x;
+	//const dy = camera.position.y - SunObject.mesh.position.y;
+	//const dz = camera.position.z - SunObject.mesh.position.z;
 
-	// Use the Pythagorean theorem to find the distance
-	const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+	//// Use the Pythagorean theorem to find the distance
+	//const distance1 = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-	console.log(distance);
+	//console.log(distance1);
 
 	if (intersects.length > 0) {
 		// Handle the click on an intersected object
 		const clickedObject = intersects[0].object;
 		// Perform actions specific to the clicked object
 		controls.target.set(clickedObject.position.x, clickedObject.position.y, clickedObject.position.z);
-		console.log(clickedObject);
+		console.log(clickedObject.position.x, clickedObject.position.y, clickedObject.position.z);
 	}
+
+	for (let i = 0; i < intersects.length; i++) {
+		console.log(`object ${i}: ${intersects[0].object}`);
+	}
+
+	//const lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
+	//const lineGeometry = new THREE.BufferGeometry();
+	//const positions = [];
+	//positions.push(camera.position.x, camera.position.y, camera.position.z); // Start at the origin (camera position)
+	//positions.push(raycaster.ray.direction.x, raycaster.ray.direction.y, raycaster.ray.direction.z); // End at the ray's direction
+	//lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+	//const rayLine = new THREE.Line(lineGeometry, lineMaterial);
+	//scene.add(rayLine);
+
 }
 
 function request(planetCode) { //this function is used to make a request to the nasa horizon api
@@ -84,7 +102,7 @@ function request(planetCode) { //this function is used to make a request to the 
 }
 
 class SphereObject {
-	constructor(radius, widthSegments, heightSegments, color, pathToTexture) {
+	constructor(newName, radius, widthSegments, heightSegments, color, pathToTexture) {
 		const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);		
 		let material = new THREE.MeshBasicMaterial({ color });
 		
@@ -105,6 +123,7 @@ class SphereObject {
 		}
 
 		this.mesh = new THREE.Mesh(geometry, material);
+		this.name = newName;
 	}
 
 	addToScene(scene) {scene.add(this.mesh);}
@@ -126,16 +145,16 @@ const SaturnTexturePath = `${texturePath}SaturnTexture.jpg`
 const UranusTexturePath = `${texturePath}UranusTexture.jpg`
 const NeptuneTexturePath = `${texturePath}NeptuneTexture.jpg`
 
-const SunObject = new SphereObject(0.465, 64, 32, 0xff0000, SunTexturePath);
+const SunObject = new SphereObject('Sun', 0.465, 64, 32, 0xff0000, SunTexturePath);
 
-const MercuryObject = new SphereObject(0.01, 64, 32, 0x0000ff, MercuryTexturePath);
-const VenusObject = new SphereObject(0.04, 64, 32, 0x00ff00, VenusTexturePath);
+const MercuryObject = new SphereObject('Mercury', 0.01, 64, 32, 0x0000ff, MercuryTexturePath);
+const VenusObject = new SphereObject('Venus', 0.04, 64, 32, 0x00ff00, VenusTexturePath);
 //const Earth = new SphereObject(0.042, 32, 16, 0x00ff00);
-const MarsObject = new SphereObject(0.022, 64, 32, 0xff0000, MarsTexturePath);
-const JupiterObject = new SphereObject(0.47, 64, 32, 0x550000, JupiterTexturePath);
-const SaturnObject = new SphereObject(0.47, 64, 32, 0xffff11, SaturnTexturePath);
-const UranusObject = new SphereObject(0.47, 64, 32, 0xff00ff, UranusTexturePath);
-const NeptuneObject = new SphereObject(0.47, 64, 32, 0x5500ff, NeptuneTexturePath);
+const MarsObject = new SphereObject('Mars', 0.022, 64, 32, 0xff0000, MarsTexturePath);
+const JupiterObject = new SphereObject('Jupiter', 0.47, 64, 32, 0x550000, JupiterTexturePath);
+const SaturnObject = new SphereObject('Saturn', 0.47, 64, 32, 0xffff11, SaturnTexturePath);
+const UranusObject = new SphereObject('Uranus', 0.47, 64, 32, 0xff00ff, UranusTexturePath);
+const NeptuneObject = new SphereObject('Neptune', 0.47, 64, 32, 0x5500ff, NeptuneTexturePath);
 
 const bodyScale = 10;
 
