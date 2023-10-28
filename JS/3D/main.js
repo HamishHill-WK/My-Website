@@ -1,6 +1,17 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import * as NASA from './NASAdata.js';
+
+import { createRoot } from 'react-dom/client';
+
+// Clear the existing HTML content
+//document.body.innerHTML = '<div id="app"></div>';
+
+// Render your React component instead
+//const root = createRoot(document.getElementById('app'));
+//root.render(<h1>Hello, world</h1>);
+
+
 const scene = new THREE.Scene();
 
 const renderer = new THREE.WebGLRenderer();
@@ -88,16 +99,16 @@ const SaturnTexturePath = `${texturePath}SaturnTexture.jpg`
 const UranusTexturePath = `${texturePath}UranusTexture.jpg`
 const NeptuneTexturePath = `${texturePath}NeptuneTexture.jpg`
 
-const bodyScale = 1000;
-const SunObject = new SphereObject('Sun', 0.465, 128, 64, 0xff0000, SunTexturePath);
-const MercuryObject = new SphereObject('Mercury', 0.01 * bodyScale, 128, 64, 0x0000ff, MercuryTexturePath);
-const VenusObject = new SphereObject('Venus', 0.04 * bodyScale, 128, 64, 0x00ff00, VenusTexturePath);
-//const Earth = new SphereObject(0.042, 32, 16, 0x00ff00);
-const MarsObject = new SphereObject('Mars', 0.022 * bodyScale, 128, 64, 0xff0000, MarsTexturePath);
-const JupiterObject = new SphereObject('Jupiter', 0.4 * bodyScale, 128, 64, 0x550000, JupiterTexturePath);
-const SaturnObject = new SphereObject('Saturn', 0.4 * bodyScale, 128, 64, 0xffff11, SaturnTexturePath);
-const UranusObject = new SphereObject('Uranus', 0.4 * bodyScale, 128, 64, 0xff00ff, UranusTexturePath);
-const NeptuneObject = new SphereObject('Neptune', 0.4 * bodyScale, 128, 64, 0x5500ff, NeptuneTexturePath);
+const bodyScale = 10000;
+const SunObject = new SphereObject('Sun', 0.004649 * bodyScale/10, 128, 64, 0xff0000, SunTexturePath);
+const MercuryObject = new SphereObject('Mercury', 0.0000163 * bodyScale, 128, 64, 0x0000ff, MercuryTexturePath);
+const VenusObject = new SphereObject('Venus', 0.0000405 * bodyScale, 128, 64, 0x00ff00, VenusTexturePath);
+//const Earth = new SphereObject( 0.0000426 * bodyScale, 32, 16, 0x00ff00);
+const MarsObject = new SphereObject('Mars', 0.0000227 * bodyScale, 128, 64, 0xff0000, MarsTexturePath);
+const JupiterObject = new SphereObject('Jupiter', 0.000467 * bodyScale, 128, 64, 0x550000, JupiterTexturePath);
+const SaturnObject = new SphereObject('Saturn', 0.000389 * bodyScale, 128, 64, 0xffff11, SaturnTexturePath);
+const UranusObject = new SphereObject('Uranus', 0.000169 * bodyScale, 128, 64, 0xff00ff, UranusTexturePath);
+const NeptuneObject = new SphereObject('Neptune', 0.000164 * bodyScale, 128, 64, 0x5500ff, NeptuneTexturePath);
 
 //MercuryObject.setScale(bodyScale, bodyScale, bodyScale);
 //VenusObject.setScale(bodyScale, bodyScale, bodyScale);
@@ -172,7 +183,7 @@ function init() {
 
 function cartesianCoords(longitude, latitude, distance) {	//function to convert heliocentric longitude, latitude and distance from the sun to cartesian coordinates.
 	distance = parseFloat(distance);
-	distance = distance * bodyScale/2;
+	distance = distance * bodyScale/100;
 
 	const hEclLonRad = longitude * (Math.PI / 180);
 	const hEclLatRad = latitude * (Math.PI / 180);
@@ -193,3 +204,4 @@ function cartesianCoords(longitude, latitude, distance) {	//function to convert 
 
 init();
 animate();
+
