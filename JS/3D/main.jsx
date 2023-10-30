@@ -185,7 +185,7 @@ function init() {
 
 function cartesianCoords(longitude, latitude, distance) {	//function to convert heliocentric longitude, latitude and distance from the sun to cartesian coordinates.
 	distance = parseFloat(distance);
-	distance = distance * bodyScale/100;
+	distance = distance * bodyScale/200;
 
 	const hEclLonRad = longitude * (Math.PI / 180);
 	const hEclLatRad = latitude * (Math.PI / 180);

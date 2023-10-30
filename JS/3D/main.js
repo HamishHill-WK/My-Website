@@ -2,16 +2,6 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import * as NASA from './NASAdata.js';
 
-import { createRoot } from 'react-dom/client';
-
-// Clear the existing HTML content
-//document.body.innerHTML = '<div id="app"></div>';
-
-// Render your React component instead
-//const root = createRoot(document.getElementById('app'));
-//root.render(<h1>Hello, world</h1>);
-
-
 const scene = new THREE.Scene();
 
 const renderer = new THREE.WebGLRenderer();
@@ -110,15 +100,6 @@ const SaturnObject = new SphereObject('Saturn', 0.000389 * bodyScale, 128, 64, 0
 const UranusObject = new SphereObject('Uranus', 0.000169 * bodyScale, 128, 64, 0xff00ff, UranusTexturePath);
 const NeptuneObject = new SphereObject('Neptune', 0.000164 * bodyScale, 128, 64, 0x5500ff, NeptuneTexturePath);
 
-//MercuryObject.setScale(bodyScale, bodyScale, bodyScale);
-//VenusObject.setScale(bodyScale, bodyScale, bodyScale);
-//MarsObject.setScale(bodyScale, bodyScale, bodyScale);
-//JupiterObject.setScale(bodyScale, bodyScale, bodyScale);
-//SaturnObject.setScale(bodyScale, bodyScale, bodyScale);
-//UranusObject.setScale(bodyScale, bodyScale, bodyScale);
-//NeptuneObject.setScale(bodyScale, bodyScale, bodyScale);
-//SunObject.setScale(bodyScale/2, bodyScale/2, bodyScale/2);
-
 MercuryObject.addToScene(scene);
 VenusObject.addToScene(scene);
 MarsObject.addToScene(scene);
@@ -183,7 +164,7 @@ function init() {
 
 function cartesianCoords(longitude, latitude, distance) {	//function to convert heliocentric longitude, latitude and distance from the sun to cartesian coordinates.
 	distance = parseFloat(distance);
-	distance = distance * bodyScale/100;
+	distance = distance * bodyScale/1000;
 
 	const hEclLonRad = longitude * (Math.PI / 180);
 	const hEclLatRad = latitude * (Math.PI / 180);
