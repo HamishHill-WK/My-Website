@@ -2,13 +2,9 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>My first three.js app</title>
+	<title>SolarSystem</title>
 	<link rel="stylesheet" type="text/css" href="../CSS/mystyles.css" />
-	<style>
-		#threejs-container {
-			margin: 0;
-		}
-	</style>
+	<link rel="stylesheet" type="text/css" href="../CSS/solarstyles.css" />
 </head>
 <body>
 	<div id="wrapper">
@@ -33,7 +29,20 @@
 			</div>
 		</div>
 	</div>
-	<div id="threejs-container"></div>
+	<div id="threejs-container">
+
+		<div id="overlay">
+			<button class="focusButton">Sun</button>
+			<button class="focusButton">Mercury</button>
+			<button class="focusButton">Venus</button>
+			<button class="focusButton">Earth</button>
+			<button class="focusButton">Mars</button>
+			<button class="focusButton">Jupiter</button>
+			<button class="focusButton">Saturn</button>
+			<button class="focusButton">Uranus</button>
+			<button class="focusButton">Neptune</button>
+		</div>
+	</div>
 	<script type="module" src="JS/3D/main.js"></script>
 </body>
 </html>

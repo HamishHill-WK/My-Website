@@ -15,34 +15,27 @@ scene.add(camera);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.listenToKeyEvents(renderer.domElement);
 
-const light = new THREE.PointLight(0xffffff, 800, 4000);
+const light = new THREE.PointLight(0xffffff, 600, 4000);
 scene.add(light);
 const AmbientLight = new THREE.AmbientLight(0xffffff, 0.1);
 scene.add(AmbientLight);
 
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
-document.addEventListener('mousedown', onMouseDown, false);
+// Get all elements with the "myButton" class
+const buttons = document.querySelectorAll(".focusButton");
 
-function onMouseDown(event) {
-	// Calculate mouse coordinates in NDC space
-	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+// Add an event listener for each button
+buttons.forEach((button) => {
+	button.addEventListener("click", function () {
+		buttons.forEach((otherButton) => {
+			if (otherButton.classList.contains("clicked")) {
+				otherButton.classList.remove("clicked");
+			}
+		});
 
-	raycaster.setFromCamera(mouse, camera);
-
-	const intersects = raycaster.intersectObjects(scene.children, false);
-
-	if (intersects.length > 0) {
-		const clickedObject = intersects[0].object;
-		controls.target.set(clickedObject.position.x, clickedObject.position.y, clickedObject.position.z);
-		console.log(clickedObject.position.x, clickedObject.position.y, clickedObject.position.z);
-	}
-
-	for (let i = 0; i < intersects.length; i++) {
-		console.log(`object ${i}: ${intersects[0].object}`);
-	}
-}
+		button.classList.add("clicked");
+		setFocus(button.textContent);
+	});
+});
 
 class SphereObject {
 	constructor(newName, radius, widthSegments, heightSegments, color, pathToTexture) {
@@ -51,7 +44,7 @@ class SphereObject {
 		
 		if (pathToTexture !== undefined) {
 			const texture = textureLoader.load(pathToTexture);
-			if (pathToTexture === SunTexturePath) {
+			if (pathToTexture === `${texturePath}SunTexture.jpg`) {
 				material = new THREE.MeshStandardMaterial({
 					emissiveMap: texture,
 					emissive: new THREE.Color(1,1,1), 
@@ -73,13 +66,16 @@ class SphereObject {
 
 	setRotation(x, y, z) {this.mesh.rotation.set(x, y, z);}
 
-	setPosition(x, y, z) {this.mesh.position.set(x, y, z);}
+	setPosition(x, y, z) { this.mesh.position.set(x, y, z); }
+
+	getPosition() {
+		return this.mesh.position;
+	}
 
 	setScale(x, y, z) {this.mesh.scale.set(x, y, z);}
 }
 
 const texturePath = '../../Images/SolarSystem/';
-const SunTexturePath = `${texturePath}SunTexture.jpg`;
 
 const bodyScale = 10000;
 const PlanetObjectsArray = [
@@ -94,7 +90,7 @@ const PlanetObjectsArray = [
 ];
 
 //sun object will be at 0,0,0 so no need to include it in the planets array. Planetary objects' coords are calculated relative to the sun. 
-const SunObject = new SphereObject('Sun', 0.004649 * bodyScale / 10, 128, 64, 0xff0000, SunTexturePath);
+const SunObject = new SphereObject('Sun', 0.004649 * bodyScale / 10, 128, 64, 0xff0000, `${texturePath}SunTexture.jpg`);
 SunObject.addToScene(scene);
 
 for (const Planet of PlanetObjectsArray) {
@@ -134,6 +130,31 @@ function init() {
 		.catch(error => {
 			console.error('Error', error);
 		});
+}
+
+function setFocus(name) {
+	console.log(name);
+	if (name === 'Sun') {
+		controls.target.set(0, 0, 0);
+		console.log(controls.target);
+	}
+
+	for (const Planet of PlanetObjectsArray) {
+		if (Planet.name === name) {
+			console.log(name);
+			console.log(Planet.getPosition());
+
+			const pos = Planet.getPosition()
+			
+			controls.target.set(pos.x, pos.y, pos.z);
+			console.log(controls.target);
+
+		}
+	}
+}
+
+function boop() {
+	console.log("boop");
 }
 
 init();
