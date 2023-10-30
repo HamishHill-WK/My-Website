@@ -2,18 +2,19 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import * as NASA from './NASAdata.js';
 const scene = new THREE.Scene();
-
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const textureLoader = new THREE.TextureLoader();
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000);
-camera.position.set(0, -25, 0); 
+camera.position.set(0, 0, 25); 
 scene.add(camera);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.listenToKeyEvents(renderer.domElement);
+controls.enableDamping = true;
+controls.enablePan = false;
 
 const light = new THREE.PointLight(0xffffff, 600, 4000);
 scene.add(light);
@@ -22,6 +23,39 @@ scene.add(AmbientLight);
 
 // Get all elements with the "myButton" class
 const buttons = document.querySelectorAll(".focusButton");
+
+const startDateInput = document.getElementById("startDateInput");
+const endDateInput = document.getElementById("endDateInput");
+
+const currentDate = new Date();
+let year = currentDate.getFullYear();
+let month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+let day = String(currentDate.getDate()).padStart(2, '0');
+let formattedDate = `${year}-${month}-${day}`;
+startDateInput.value = formattedDate;
+
+currentDate.setDate(currentDate.getDate() + 1);
+year = currentDate.getFullYear();
+month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+day = String(currentDate.getDate()).padStart(2, '0');
+formattedDate = `${year}-${month}-${day}`;
+endDateInput.value = formattedDate;
+
+startDateInput.addEventListener("input", function () {
+	// Get the input value
+	const inputValue = startDateInput.value;
+
+	// Display the input value in real-time
+	console.log("You typed: " + inputValue);
+});
+
+endDateInput.addEventListener("input", function () {
+	// Get the input value
+	const inputValue = endDateInput.value;
+
+	// Display the input value in real-time
+	console.log("You typed: " + inputValue);
+});
 
 // Add an event listener for each button
 buttons.forEach((button) => {
@@ -35,7 +69,24 @@ buttons.forEach((button) => {
 		button.classList.add("clicked");
 		setFocus(button.textContent);
 	});
+
+	if (button.textContent === "Sun") {
+		button.classList.add("clicked");
+	}
 });
+
+function setFocus(name) {
+	if (name === 'Sun') {
+		controls.target.set(0, 0, 0);
+	}
+
+	for (const Planet of PlanetObjectsArray) {
+		if (Planet.name === name) {
+			const pos = Planet.getPosition()
+			controls.target.set(pos.x, pos.y, pos.z);
+		}
+	}
+}
 
 class SphereObject {
 	constructor(newName, radius, widthSegments, heightSegments, color, pathToTexture) {
@@ -64,15 +115,13 @@ class SphereObject {
 
 	addToScene(scene) {scene.add(this.mesh);}
 
-	setRotation(x, y, z) {this.mesh.rotation.set(x, y, z);}
+	setRotation(x, y, z) { this.mesh.rotation.set(x, y, z); }
 
 	setPosition(x, y, z) { this.mesh.position.set(x, y, z); }
 
-	getPosition() {
-		return this.mesh.position;
-	}
+	getPosition() { return this.mesh.position; }
 
-	setScale(x, y, z) {this.mesh.scale.set(x, y, z);}
+	setScale(x, y, z) { this.mesh.scale.set(x, y, z); }
 }
 
 const texturePath = '../../Images/SolarSystem/';
@@ -89,21 +138,18 @@ const PlanetObjectsArray = [
 	new SphereObject('Neptune', 0.000164 * bodyScale, 128, 64, 0x5500ff, `${texturePath}NeptuneTexture.jpg`)
 ];
 
-//sun object will be at 0,0,0 so no need to include it in the planets array. Planetary objects' coords are calculated relative to the sun. 
+//Sun object will be at 0,0,0 so no need to include it in the planets array. Planetary objects' coords are calculated relative to the sun. 
 const SunObject = new SphereObject('Sun', 0.004649 * bodyScale / 10, 128, 64, 0xff0000, `${texturePath}SunTexture.jpg`);
-SunObject.addToScene(scene);
 
-for (const Planet of PlanetObjectsArray) {
-	Planet.addToScene(scene);
+function spawnPlanetObjects() {
+	SunObject.addToScene(scene);
+
+	for (const Planet of PlanetObjectsArray) {
+		Planet.addToScene(scene);
+	}
 }
 
-function animate() {
-	requestAnimationFrame(animate);
-	controls.update();
-	renderer.render(scene, camera);
-}
-
-function init() {
+function setPlanetPositions() {
 	const PlanetData = [];
 
 	for (let i = 1; i < PlanetObjectsArray.length + 1; i++) {
@@ -115,11 +161,11 @@ function init() {
 			const PlanetsExtractData = [];
 			const PlanetsPositions = [];
 			for (const data of rawData) {
-				PlanetsExtractData.push( NASA.getData(data));	//first relevant data is extracted from the received json file 
+				PlanetsExtractData.push(NASA.getData(data));	//first relevant data is extracted from the received json file 
 			}
 
 			for (const extractedData of PlanetsExtractData) {	//the data is then converted in cartesian coords to place the object in the 3D scene
-				PlanetsPositions.push(NASA.cartesianCoords(extractedData[4], extractedData[5], extractedData[6], bodyScale));	
+				PlanetsPositions.push(NASA.cartesianCoords(extractedData[4], extractedData[5], extractedData[6], bodyScale));
 			}
 
 			for (let i = 0; i < PlanetObjectsArray.length; i++) {	//Rendered planetary objects' positions are updated to correspond with the data received from NASA
@@ -132,30 +178,16 @@ function init() {
 		});
 }
 
-function setFocus(name) {
-	console.log(name);
-	if (name === 'Sun') {
-		controls.target.set(0, 0, 0);
-		console.log(controls.target);
-	}
-
-	for (const Planet of PlanetObjectsArray) {
-		if (Planet.name === name) {
-			console.log(name);
-			console.log(Planet.getPosition());
-
-			const pos = Planet.getPosition()
-			
-			controls.target.set(pos.x, pos.y, pos.z);
-			console.log(controls.target);
-
-		}
-	}
+function init() {
+	spawnPlanetObjects();
+	setPlanetPositions();
+	animate();
 }
 
-function boop() {
-	console.log("boop");
+function animate() {
+	requestAnimationFrame(animate);
+	controls.update();
+	renderer.render(scene, camera);
 }
 
 init();
-animate();

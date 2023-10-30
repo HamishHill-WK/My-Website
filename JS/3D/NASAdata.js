@@ -11,7 +11,6 @@ export function request(planetCode) { //this function is used to make a request 
 	}
 
 	const url = `https://ssd.jpl.nasa.gov/api/horizons.api?format=${format}&COMMAND=${command}&OBJ_DATA='YES'&MAKE_EPHEM='YES'&EPHEM_TYPE='OBSERVER'&CENTER='500@${observerCode}'&START_TIME='${startDate}'&STOP_TIME='${stopDate}'&STEP_SIZE='1%20d'&QUANTITIES='${quantities}'`;
-	console.log(url);
 	return fetch(`https://corsproxy.io/?${url}`)	//cors proxy is used to get around cross origin security policy for this api 
 		.then(response => {
 			if (!response.ok) {//sometimes get a bad response from api, usually fixed on reloading the page
@@ -51,15 +50,13 @@ export function cartesianCoords(longitude, latitude, distance, bodyScale) {	//fu
 	const hEclLatRad = latitude * (Math.PI / 180);
 
 	const x = distance * Math.cos(hEclLatRad) * Math.cos(hEclLonRad);
-	const y = distance * Math.cos(hEclLatRad) * Math.sin(hEclLonRad);
-	const z = distance * Math.sin(hEclLatRad);
+	const y = distance * Math.sin(hEclLatRad);
+	const z = distance * Math.cos(hEclLatRad) * Math.sin(hEclLonRad);
 
 	const coordinates1 = [x, y, z];
 	const distance1 = Math.sqrt(
 		coordinates1[0] ** 2 + coordinates1[1] ** 2 + coordinates1[2] ** 2
 	);
-
-	console.log(`Distance of coordinates1: ${distance1}, x:${x}, y:${y}, z:${z}`);
 
 	return [x, y, z];
 }

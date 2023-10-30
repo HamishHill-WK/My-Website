@@ -1,7 +1,7 @@
 //this script uses data from NASA's moon api and then loads it to the web page.
 //NASA api is available here: https://svs.gsfc.nasa.gov/5048 
 function request(date)  { //this function is used to make a request to the nasa api
-    const dateToday = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;  //0must be added to single digit days or months for the api request to be valid
+    const dateToday = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;  //must be added to single digit days or months for the api request to be valid
     const time = `${String(date.getHours()).padStart(2, '0') }:${String(date.getMinutes()).padStart(2, '0')}`; //0 must be added to single digit for the api request to be valid
     return fetch(`https://svs.gsfc.nasa.gov/api/dialamoon/${dateToday}T${time}`)
         .then(response => {
