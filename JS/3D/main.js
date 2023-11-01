@@ -15,8 +15,9 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.listenToKeyEvents(renderer.domElement);
 controls.enableDamping = true;
 controls.enablePan = false;
+controls.minDistance = 5;
 
-const light = new THREE.PointLight(0xffffff, 600, 4000);
+const light = new THREE.PointLight(0xffffff, 500, 4000);
 scene.add(light);
 const AmbientLight = new THREE.AmbientLight(0xffffff, 0.1);
 scene.add(AmbientLight);
@@ -31,30 +32,49 @@ const currentDate = new Date();
 let year = currentDate.getFullYear();
 let month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
 let day = String(currentDate.getDate()).padStart(2, '0');
-let formattedDate = `${year}-${month}-${day}`;
-startDateInput.value = formattedDate;
+let startDate = `${year}-${month}-${day}`;
+startDateInput.value = startDate;
 
 currentDate.setDate(currentDate.getDate() + 1);
 year = currentDate.getFullYear();
 month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
 day = String(currentDate.getDate()).padStart(2, '0');
-formattedDate = `${year}-${month}-${day}`;
-endDateInput.value = formattedDate;
+let endDate = `${year}-${month}-${day}`;
+endDateInput.value = endDate;
 
-startDateInput.addEventListener("input", function () {
+startDateInput.addEventListener("blur", function () {
 	// Get the input value
-	const inputValue = startDateInput.value;
+	if (startDateInput.value > endDate) {
+		startDateInput.value = startDate;
+		alert("Start date cannot be later than end date");
+		return;
+	}
+	else {
+		startDate = startDateInput.value;
+		console.log("You typed: " + startDate);
+	}
+
+	setPlanetPositions();
 
 	// Display the input value in real-time
-	console.log("You typed: " + inputValue);
 });
 
-endDateInput.addEventListener("input", function () {
+endDateInput.addEventListener("blur", function () {
 	// Get the input value
-	const inputValue = endDateInput.value;
+
+	if (endDateInput.value < startDate) {
+		endDateInput.value = endDate;
+		alert("End date cannot be earlier than start date");
+		return;
+	}
+	else {
+		endDate = endDateInput.value;
+		console.log("You typed: " + endDate);
+
+	}
+	setPlanetPositions();
 
 	// Display the input value in real-time
-	console.log("You typed: " + inputValue);
 });
 
 // Add an event listener for each button
@@ -82,8 +102,7 @@ function setFocus(name) {
 
 	for (const Planet of PlanetObjectsArray) {
 		if (Planet.name === name) {
-			const pos = Planet.getPosition()
-			controls.target.set(pos.x, pos.y, pos.z);
+			focusBody = Planet;
 		}
 	}
 }
@@ -140,7 +159,7 @@ const PlanetObjectsArray = [
 
 //Sun object will be at 0,0,0 so no need to include it in the planets array. Planetary objects' coords are calculated relative to the sun. 
 const SunObject = new SphereObject('Sun', 0.004649 * bodyScale / 10, 128, 64, 0xff0000, `${texturePath}SunTexture.jpg`);
-
+let focusBody = SunObject;
 function spawnPlanetObjects() {
 	SunObject.addToScene(scene);
 
@@ -153,7 +172,7 @@ function setPlanetPositions() {
 	const PlanetData = [];
 
 	for (let i = 1; i < PlanetObjectsArray.length + 1; i++) {
-		PlanetData.push(NASA.request(i));
+		PlanetData.push(NASA.request(i, startDate, endDate));
 	}
 
 	Promise.all(PlanetData)  //Promise is used to wait for all api requests to complete
@@ -186,6 +205,8 @@ function init() {
 
 function animate() {
 	requestAnimationFrame(animate);
+	const pos = focusBody.getPosition()
+	controls.target.set(pos.x, pos.y, pos.z);
 	controls.update();
 	renderer.render(scene, camera);
 }

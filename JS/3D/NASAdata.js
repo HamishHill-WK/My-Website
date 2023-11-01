@@ -1,9 +1,9 @@
-export function request(planetCode) { //this function is used to make a request to the nasa horizon api
+export async function request(planetCode, startDate, stopDate) { //this function is used to make a request to the nasa horizon api
 	const format = 'json';
 	const command = `${planetCode}99`;
 	const quantities = '18,19';	//code 18 to request helio-centric longitude and latitude. 19 for The Sun's apparent range, (light-time aberrated) relative to the target center, as seen by the observer, in astronomical units (AU).
-	const startDate = '2023-09-19';
-	const stopDate = '2023-09-20';
+	//const startDate = '2023-09-19';
+	//const stopDate = '2023-09-20';
 	let observerCode = '399'; //defualt observer earth
 
 	if (planetCode === 3) {//if we are requesting the data for earth we must switch the observer
@@ -11,21 +11,51 @@ export function request(planetCode) { //this function is used to make a request 
 	}
 
 	const url = `https://ssd.jpl.nasa.gov/api/horizons.api?format=${format}&COMMAND=${command}&OBJ_DATA='YES'&MAKE_EPHEM='YES'&EPHEM_TYPE='OBSERVER'&CENTER='500@${observerCode}'&START_TIME='${startDate}'&STOP_TIME='${stopDate}'&STEP_SIZE='1%20d'&QUANTITIES='${quantities}'`;
-	return fetch(`https://corsproxy.io/?${url}`)	//cors proxy is used to get around cross origin security policy for this api 
-		.then(response => {
-			if (!response.ok) {//sometimes get a bad response from api, usually fixed on reloading the page
-				throw new Error('Network response was not ok');	//TODO: handle bad response better 
-			}
-			return response.json();
-		})
-		.catch(error => {
-			console.error('Error:', error);
-		});
+	currentAttempts = 0;
+	try {
+		const result = await makeRequest(url, currentAttempts, 7500);
+		return result;
+	} catch (error) {
+		throw error;
+	}
 }
+
+async function makeRequest(url, currentAttempt, delay) {
+	try {
+		const response = await fetch(`https://corsproxy.io/?${url}`);
+		//const response = await fetch(`https://proxy.cors.sh/${url}`);
+
+		if (response.ok) {
+			console.log("response ok"); 
+			return await response.json();
+
+		} else {
+			if (currentAttempt < maxRequestAttempts) {
+				console.log(`Attempt ${currentAttempt} failed. Retrying in ${delay / 1000} seconds...`);
+				await new Promise(resolve => setTimeout(resolve, delay));
+				return await makeRequest(url, currentAttempt + 1, delay);
+			} else {
+				throw new Error("Maximum number of attempts reached. Request failed."); // Reject the promise if max attempts reached
+			}
+		}
+	} catch (error) {
+		console.log(error);
+		if (currentAttempt < maxRequestAttempts) {
+			console.log(`Attempt ${currentAttempt} failed. Retrying in ${delay / 1000} seconds...`);
+			await new Promise(resolve => setTimeout(resolve, delay)); // Add a delay here
+			return await makeRequest(url, currentAttempt + 1, delay); // Recursively retry
+		} else {
+			throw new Error("Maximum number of attempts reached. Request failed.");
+		}
+	}
+}
+
+const maxRequestAttempts = 55;
+let currentAttempts = 0;
 
 export function getData(data) {	//function to extract necessary data from json file received in api request
 	const lines = data.result.split('\n');
-
+	console.log(data);
 	let isInsideBlock = false;
 	const extractedLines = [];
 
