@@ -54,6 +54,11 @@ startDateInput.addEventListener("blur", function () {
 		console.log("You typed: " + startDate);
 	}
 
+	//TODO: add limits to date requests, earliest date for data on all planets is july 1st 1750
+	//Latest date is 08-Jan-2200
+
+	//TODO: add functionality to change end date to equal start date + 1 if start date is set later.
+
 	setPlanetPositions();
 
 	// Display the input value in real-time
@@ -154,7 +159,8 @@ const PlanetObjectsArray = [
 	new SphereObject('Jupiter', 0.000467 * bodyScale, 128, 64, 0x550000, `${texturePath}JupiterTexture.jpg`),
 	new SphereObject('Saturn', 0.000389 * bodyScale, 128, 64, 0xffff11, `${texturePath}SaturnTexture.jpg`),
 	new SphereObject('Uranus', 0.000169 * bodyScale, 128, 64, 0xff00ff, `${texturePath}UranusTexture.jpg`),
-	new SphereObject('Neptune', 0.000164 * bodyScale, 128, 64, 0x5500ff, `${texturePath}NeptuneTexture.jpg`)
+	new SphereObject('Neptune', 0.000164 * bodyScale, 128, 64, 0x5500ff, `${texturePath}NeptuneTexture.jpg`),
+	new SphereObject('Pluto', 0.0000163 * bodyScale, 128, 64, 0x5500ff, `${texturePath}PlutoTexture.jpg`)
 ];
 
 //Sun object will be at 0,0,0 so no need to include it in the planets array. Planetary objects' coords are calculated relative to the sun. 

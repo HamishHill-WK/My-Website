@@ -2,8 +2,6 @@ export async function request(planetCode, startDate, stopDate) { //this function
 	const format = 'json';
 	const command = `${planetCode}99`;
 	const quantities = '18,19';	//code 18 to request helio-centric longitude and latitude. 19 for The Sun's apparent range, (light-time aberrated) relative to the target center, as seen by the observer, in astronomical units (AU).
-	//const startDate = '2023-09-19';
-	//const stopDate = '2023-09-20';
 	let observerCode = '399'; //defualt observer earth
 
 	if (planetCode === 3) {//if we are requesting the data for earth we must switch the observer

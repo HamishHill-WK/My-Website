@@ -1,0 +1,22 @@
+#overlay {
+    position: relative;
+    top: 20px;
+    left: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button.clicked {
+    background-color: #e74c3c;
+}
+
+#threejs-container {
+    margin: 0;
+}
