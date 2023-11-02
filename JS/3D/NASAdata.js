@@ -67,6 +67,10 @@ export function getData(data) {	//function to extract necessary data from json f
 		}
 	}
 
+	
+	//console.log(extractedLines);
+
+	//extracts all numeric values (including integers and floating-point numbers) from the first line of the extractedLines array 
 	return extractedLines[0].match(/[-+]?[0-9]*\.?[0-9]+/g);
 }
 

@@ -1,11 +1,14 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import * as NASA from './NASAdata.js';
+
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const textureLoader = new THREE.TextureLoader();
+const texturePath = '../../Images/SolarSystem/';
+
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000);
 camera.position.set(0, 0, 25); 
@@ -22,7 +25,6 @@ scene.add(light);
 const AmbientLight = new THREE.AmbientLight(0xffffff, 0.1);
 scene.add(AmbientLight);
 
-// Get all elements with the "myButton" class
 const buttons = document.querySelectorAll(".focusButton");
 
 const startDateInput = document.getElementById("startDateInput");
@@ -42,44 +44,84 @@ day = String(currentDate.getDate()).padStart(2, '0');
 let endDate = `${year}-${month}-${day}`;
 endDateInput.value = endDate;
 
+const maxDateString = '2099-12-30';
+const maxDate = new Date(maxDateString);
+
+const minDateString = '1749-12-31';
+const minDate = new Date(minDateString);
+
 startDateInput.addEventListener("blur", function () {
 	// Get the input value
-	if (startDateInput.value > endDate) {
-		startDateInput.value = startDate;
-		alert("Start date cannot be later than end date");
-		return;
+	if (startDateInput.value >= endDate) {
+		startDate = startDateInput.value;
+		const newStartDate = new Date(startDate); 
+
+		if (newStartDate > maxDate) {
+			const newStartDate = new Date(maxDate); 
+
+			newStartDate.setDate(newStartDate.getDate() - 1);
+
+			year = newStartDate.getFullYear();
+			month = String(newStartDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+			day = String(newStartDate.getDate()).padStart(2, '0');
+			let newStartDateString = `${year}-${month}-${day}`;
+			startDateInput.value = newStartDateString;
+			startDate = startDateInput.value;
+		}
+
+		const newEndDate = new Date(startDate);
+		newEndDate.setDate(newEndDate.getDate() + 1);
+		year = newEndDate.getFullYear();
+		month = String(newEndDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+		day = String(newEndDate.getDate()).padStart(2, '0');
+		let newEndDateString = `${year}-${month}-${day}`;
+		endDateInput.value = newEndDateString;
+		endDate = endDateInput.value;
+
+
+		setPlanetPositions();
+
 	}
 	else {
 		startDate = startDateInput.value;
 		console.log("You typed: " + startDate);
+
+		setPlanetPositions();
 	}
-
-	//TODO: add limits to date requests, earliest date for data on all planets is july 1st 1750
-	//Latest date is 08-Jan-2200
-
-	//TODO: add functionality to change end date to equal start date + 1 if start date is set later.
-
-	setPlanetPositions();
-
-	// Display the input value in real-time
 });
 
 endDateInput.addEventListener("blur", function () {
 	// Get the input value
 
-	if (endDateInput.value < startDate) {
+	if (endDateInput.value <= startDate) {
 		endDateInput.value = endDate;
-		alert("End date cannot be earlier than start date");
-		return;
+		const newStartDate = new Date(endDate);
+		newStartDate.setDate(newStartDate.getDate() - 1);
+		year = newStartDate.getFullYear();
+		month = String(newStartDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+		day = String(newStartDate.getDate()).padStart(2, '0');
+		let newStartDateString = `${year}-${month}-${day}`;
+		startDateInput.value = newStartDateString;
+		startDate = startDateInput.value;
+		console.log("After setting endDateInput.value:", endDateInput.value);
+		setPlanetPositions();
+
 	}
 	else {
 		endDate = endDateInput.value;
-		console.log("You typed: " + endDate);
+		let newEndDate = new Date(endDate);
+		if (newEndDate > maxDate) {
+			newEndDate = new Date(maxDate);
+			year = newEndDate.getFullYear();
+			month = String(newEndDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+			day = String(newEndDate.getDate()).padStart(2, '0');
+			let newEndDateString = `${year}-${month}-${day}`;
+			endDateInput.value = newEndDateString;
+			endDate = endDateInput.value;
+		}
 
+		setPlanetPositions();
 	}
-	setPlanetPositions();
-
-	// Display the input value in real-time
 });
 
 // Add an event listener for each button
@@ -125,6 +167,12 @@ class SphereObject {
 					emissive: new THREE.Color(1,1,1), 
 				});
 			}
+			if (pathToTexture === `${texturePath}StarsTexture.jpg`) {
+				material = new THREE.MeshBasicMaterial({
+					map: texture,
+					side: THREE.BackSide,
+				});
+			}
 			else {
 				material = new THREE.MeshStandardMaterial({
 					emissiveMap: texture,
@@ -148,7 +196,8 @@ class SphereObject {
 	setScale(x, y, z) { this.mesh.scale.set(x, y, z); }
 }
 
-const texturePath = '../../Images/SolarSystem/';
+const skybox = new SphereObject('skybox', 100000, 128, 64, 0x5500ff, `${texturePath}StarsTexture.jpg`)
+skybox.addToScene(scene);
 
 const bodyScale = 10000;
 const PlanetObjectsArray = [
