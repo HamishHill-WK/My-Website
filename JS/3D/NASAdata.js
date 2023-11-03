@@ -21,7 +21,6 @@ export async function request(planetCode, startDate, stopDate) { //this function
 async function makeRequest(url, currentAttempt, delay) {
 	try {
 		const response = await fetch(`https://corsproxy.io/?${url}`);
-		//const response = await fetch(`https://proxy.cors.sh/${url}`);
 
 		if (response.ok) {
 			console.log("response ok"); 
@@ -53,7 +52,7 @@ let currentAttempts = 0;
 
 export function getData(data) {	//function to extract necessary data from json file received in api request
 	const lines = data.result.split('\n');
-	console.log(data);
+	//console.log(data);
 	let isInsideBlock = false;
 	const extractedLines = [];
 

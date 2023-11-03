@@ -1,16 +1,16 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import * as NASA from './NASAdata.js';
+import * as Object from './Object.js';
 
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const textureLoader = new THREE.TextureLoader();
-const texturePath = '../../Images/SolarSystem/';
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000);
-camera.position.set(0, 0, 25); 
+camera.position.set(0, 0, 30); 
 scene.add(camera);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -164,10 +164,6 @@ endDateInput.addEventListener("blur", function () {
 	}
 });
 
-// Assuming you have an instance of OrbitControls called 'controls'
-
-
-// Add an event listener for each button
 buttons.forEach((button) => {
 	button.addEventListener("click", function () {
 		buttons.forEach((otherButton) => {
@@ -188,6 +184,7 @@ buttons.forEach((button) => {
 function setFocus(name) {
 	if (name === 'Sun') {
 		controls.target.set(0, 0, 0);
+		console.log("sun selected");
 	}
 
 	for (const Planet of PlanetObjectsArray) {
@@ -197,104 +194,25 @@ function setFocus(name) {
 	}
 }
 
-class SphereObject {
-	constructor(newName, radius, widthSegments, heightSegments, color, pathToTexture, label) {
-		this._name = newName;
-		this._radius = radius;
-		const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);		
-		let material = new THREE.MeshBasicMaterial({ color });
-		
-		if (pathToTexture !== undefined) {
-			const texture = textureLoader.load(pathToTexture);
-			if (pathToTexture === `${texturePath}SunTexture.jpg`) {
-				material = new THREE.MeshStandardMaterial({
-					emissiveMap: texture,
-					emissive: new THREE.Color(1,1,1), 
-				});
-			}
-			if (pathToTexture === `${texturePath}StarsTexture.jpg`) {
-				texture.wrapS = THREE.RepeatWrapping;
-				texture.wrapT = THREE.RepeatWrapping;
-				texture.repeat.set(4, 4);
-				material = new THREE.MeshBasicMaterial({
-					map: texture,
-					side: THREE.BackSide,
-				});
-			}
-			else {
-				material = new THREE.MeshStandardMaterial({
-					emissiveMap: texture,
-					emissive: new THREE.Color(0.3, 0.3, 0.3),
-				});
-			}
-		}
-
-		this.mesh = new THREE.Mesh(geometry, material);
-
-		if (label) {
-			const labelTexture = textureLoader.load(`${texturePath}Labels/${this.name}Label.png`);
-			const labelMaterial = new THREE.SpriteMaterial({ map: labelTexture });
-			labelMaterial.opacity = 0.6;
-			const labelSprite = new THREE.Sprite(labelMaterial);
-			labelSprite.center.set(0.5, 0);
-			this._labelSprite = labelSprite;
-			labelSprite.position.set(this.position.x + radius / 2, this.position.y + radius + 1 / 2, this.position.z + radius/ 2); // Set the 3D position
-			scene.add(labelSprite);
-			labelSprite.scale.set(5 , 3 , 1);
-		}
-	}
-
-	updateLabel() {
-		const distance = camera.position.distanceTo(this.labelSprite.position);
-		const referenceDistance = 30;
-		// Calculate the scale factor
-		const scaleFactor = distance / referenceDistance;
-		if (this.labelSprite !== undefined) {
-			this.labelSprite.scale.set(5 * scaleFactor, 3 * scaleFactor, 1 * scaleFactor);
-			this.labelSprite.position.set(this.position.x + this.radius / 2, this.position.y + this.radius + 1 / 2, this.position.z + this.radius / 2); // Set the 3D position
-		}
-	}
-
-	addToScene(scene) {scene.add(this.mesh);}
-
-	setRotation(x, y, z) { this.mesh.rotation.set(x, y, z); }
-
-	setPosition(x, y, z) {
-		this.mesh.position.set(x, y, z);
-		this.updateLabel();
-	}
-
-	get position() { return this.mesh.position; }
-
-	get labelSprite() { return this._labelSprite; }
-
-	get name() { return this._name; }
-	get radius() { return this._radius; }
-
-	setScale(x, y, z) { this.mesh.scale.set(x, y, z); }
-}
-
-const skybox = new SphereObject('skybox', 100000, 128, 64, 0x5500ff, `${texturePath}StarsTexture.jpg`)
-skybox.addToScene(scene);
+const skybox = new Object.SphereObject('skybox', 100000, 128, 64, 0x5500ff, false, camera, textureLoader);
 
 const bodyScale = 10000;
 const PlanetObjectsArray = [
-	new SphereObject('Mercury', 0.0000163 * bodyScale, 128, 64, 0x0000ff, `${texturePath}MercuryTexture.jpg`, true),
-	new SphereObject('Venus', 0.0000405 * bodyScale, 128, 64, 0x00ff00, `${texturePath}VenusTexture.jpg`, true),
-	new SphereObject('Earth', 0.0000426 * bodyScale, 128, 64, 0x00ff00, `${texturePath}EarthTexture.jpg`, true),
-	new SphereObject('Mars', 0.0000227 * bodyScale, 128, 64, 0xff0000, `${texturePath}MarsTexture.jpg`, true),
-	new SphereObject('Jupiter', 0.000467 * bodyScale, 128, 64, 0x550000, `${texturePath}JupiterTexture.jpg`, true),
-	new SphereObject('Saturn', 0.000389 * bodyScale, 128, 64, 0xffff11, `${texturePath}SaturnTexture.jpg`, true),
-	new SphereObject('Uranus', 0.000169 * bodyScale, 128, 64, 0xff00ff, `${texturePath}UranusTexture.jpg`, true),
-	new SphereObject('Neptune', 0.000164 * bodyScale, 128, 64, 0x5500ff, `${texturePath}NeptuneTexture.jpg`, true),
-	new SphereObject('Pluto', 0.0000163 * bodyScale, 128, 64, 0x5500ff, `${texturePath}PlutoTexture.jpg`, true)
+	new Object.SphereObject('Mercury', 0.0000163 * bodyScale, 128, 64, 0x0000ff, true, camera, textureLoader),
+	new Object.SphereObject('Venus', 0.0000405 * bodyScale, 128, 64, 0x00ff00, true, camera, textureLoader),
+	new Object.SphereObject('Earth', 0.0000426 * bodyScale, 128, 64, 0x00ff00, true, camera, textureLoader),
+	new Object.SphereObject('Mars', 0.0000227 * bodyScale, 128, 64, 0xff0000, true, camera, textureLoader),
+	new Object.SphereObject('Jupiter', 0.000467 * bodyScale, 128, 64, 0x550000, true, camera, textureLoader),
+	new Object.SphereObject('Saturn', 0.000389 * bodyScale, 128, 64, 0xffff11, true, camera, textureLoader),
+	new Object.SphereObject('Uranus', 0.000169 * bodyScale, 128, 64, 0xff00ff, true, camera, textureLoader),
+	new Object.SphereObject('Neptune', 0.000164 * bodyScale, 128, 64, 0x5500ff, true, camera, textureLoader),
+	new Object.SphereObject('Pluto', 0.0000163 * bodyScale, 128, 64, 0x5500ff, true, camera, textureLoader)
 ];
 
 //Sun object will be at 0,0,0 so no need to include it in the planets array. Planetary objects' coords are calculated relative to the sun. 
-const SunObject = new SphereObject('Sun', 0.004649 * bodyScale / 10, 128, 64, 0xff0000, `${texturePath}SunTexture.jpg`, true);
+const SunObject = new Object.SphereObject('Sun', 0.004649 * bodyScale / 10, 128, 64, 0xff0000, true, camera, textureLoader);
+
 controls.addEventListener('change', () => {
-	// Adjust sprite position here based on camera zoom level
-	// You can use camera.position, camera.zoom, or other properties as needed
 	SunObject.updateLabel();
 	for (const Planet of PlanetObjectsArray) {
 		Planet.updateLabel();
@@ -304,7 +222,7 @@ controls.addEventListener('change', () => {
 let focusBody = SunObject;
 function spawnPlanetObjects() {
 	SunObject.addToScene(scene);
-
+	skybox.addToScene(scene);
 	for (const Planet of PlanetObjectsArray) {
 		Planet.addToScene(scene);
 	}
@@ -338,20 +256,18 @@ function setPlanetPositions() {
 			console.error('Error', error);
 		});
 }
-
-function init() {
-	spawnPlanetObjects();
-	setPlanetPositions();
-	animate();
-}
-
 function animate() {
 	requestAnimationFrame(animate);
 	const pos = focusBody.position;
 	controls.target.set(pos.x, pos.y, pos.z);
 	controls.update();
-	//SunObject.updateLabel();
 	renderer.render(scene, camera);
+}
+
+function init() {
+	spawnPlanetObjects();
+	setPlanetPositions();
+	animate();
 }
 
 init();
