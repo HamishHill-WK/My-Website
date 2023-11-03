@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import * as NASA from './NASAdata.js';
-import * as Object from './Object.js';
+import * as Object3D from './Object.js';
+import * as DateManager from './dateManager.js';
 
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer();
@@ -21,6 +22,12 @@ controls.minDistance = 5;	//prevents zooming inside target object
 controls.maxDistance = 1000;
 controls.minPolarAngle = Math.PI / 3;	//min vertical angle set to 60 degrees
 controls.maxPolarAngle = 2 * Math.PI / 3;	//max vertical angle set to 120 degrees
+controls.addEventListener('change', () => {	//when the camera moves the scale of labels is updated to maintain the scale relative to distance.
+	SunObject.updateLabel();
+	for (const Planet of PlanetObjectsArray) {
+		Planet.updateLabel();
+	}
+});
 
 const light = new THREE.PointLight(0xffffff, 500, 4000);
 scene.add(light);
@@ -33,117 +40,63 @@ const startDateInput = document.getElementById("startDateInput");
 const endDateInput = document.getElementById("endDateInput");
 
 const currentDate = new Date();
-let year = currentDate.getFullYear();
-let month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-let day = String(currentDate.getDate()).padStart(2, '0');
-let startDate = `${year}-${month}-${day}`;
-startDateInput.value = startDate;
+startDateInput.value = DateManager.dateToString(currentDate);
 
 currentDate.setDate(currentDate.getDate() + 1);
-year = currentDate.getFullYear();
-month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-day = String(currentDate.getDate()).padStart(2, '0');
-let endDate = `${year}-${month}-${day}`;
-endDateInput.value = endDate;
+endDateInput.value = DateManager.dateToString(currentDate);
 
 const maxDateString = '2099-12-30';
 const maxDate = new Date(maxDateString);
 
 const minDateString = '1749-12-31T23:59:59';
 const minDate = new Date(minDateString);
-console.log("After setting endDateInput.value:", minDate);
 
 startDateInput.addEventListener("blur", function () {
 	// Get the input value
-	if (startDateInput.value >= endDate) {
-		startDate = startDateInput.value;
-		const newStartDate = new Date(startDate); 
+	if (startDateInput.value >= endDateInput.value) {
+		const newStartDate = new Date(startDateInput.value); 
 
 		if (newStartDate > maxDate) {
 			const newStartDate = new Date(maxDate); 
 
 			newStartDate.setDate(newStartDate.getDate() - 1);
 
-			year = newStartDate.getFullYear();
-			month = String(newStartDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-			day = String(newStartDate.getDate()).padStart(2, '0');
-			let newStartDateString = `${year}-${month}-${day}`;
-			startDateInput.value = newStartDateString;
-			startDate = startDateInput.value;
+			startDateInput.value = DateManager.dateToString(newStartDate);
 		}
 
-		const newEndDate = new Date(startDate);
+		const newEndDate = new Date(startDateInput.value);
 		newEndDate.setDate(newEndDate.getDate() + 1);
-		year = newEndDate.getFullYear();
-		month = String(newEndDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-		day = String(newEndDate.getDate()).padStart(2, '0');
-		let newEndDateString = `${year}-${month}-${day}`;
-		endDateInput.value = newEndDateString;
-		endDate = endDateInput.value;
-
+		endDateInput.value = DateManager.dateToString(newEndDate);
 
 		setPlanetPositions();
-
 	}
 	else {
-		startDate = startDateInput.value;
-		let newStartDate = new Date(startDate);
+		let newStartDate = new Date(startDateInput.value);
 		if (newStartDate < minDate) {
 			newStartDate = new Date(minDate);
-			year = newStartDate.getFullYear();
-			month = String(newStartDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-			day = String(newStartDate.getDate()).padStart(2, '0');
-			let newStartDateString = `${year}-${month}-${day}`;
-			startDateInput.value = newStartDateString;
-			startDate = startDateInput.value;
+			startDateInput.value = DateManager.dateToString(newStartDate);
 		}
-
-		console.log("You typed: " + startDate);
-
 		setPlanetPositions();
 	}
 });
 
 endDateInput.addEventListener("blur", function () {
-	// Get the input value
-
-	if (endDateInput.value <= startDate) {
-		endDate = endDateInput.value;
+	if (endDateInput.value <= startDateInput.value) {
 		let newStartDate = new Date(endDate);
 
 		if (newStartDate < minDate) {
 			newStartDate = new Date(minDate);
-			console.log("After setting endDateInput.value:", newStartDate);
-			console.log("After setting endDateInput.value:", minDate);
-			year = newStartDate.getFullYear();
-			month = String(newStartDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-			day = String(newStartDate.getDate()).padStart(2, '0');
-			let newStartDateString = `${year}-${month}-${day}`;
-			startDateInput.value = newStartDateString;
-			startDate = startDateInput.value;
+			startDateInput.value = DateManager.dateToString(newStartDate);
 
 			newStartDate.setDate(newStartDate.getDate() + 1);
-			year = newStartDate.getFullYear();
-			month = String(newStartDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-			day = String(newStartDate.getDate()).padStart(2, '0');
-			const newEndDateString = `${year}-${month}-${day}`;
-			endDateInput.value = newEndDateString;
-			endDate = endDateInput.value;
-			console.log("After setting endDateInput.value:", endDateInput.value);
-			console.log("After setting endDateInput.value:", startDateInput.value);
+			endDateInput.value = DateManager.dateToString(newStartDate);
 
 			setPlanetPositions();
 		}
 		else {
 			newStartDate.setDate(newStartDate.getDate() - 1);
+			startDateInput.value = DateManager.dateToString(newStartDate);
 
-			year = newStartDate.getFullYear();
-			month = String(newStartDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-			day = String(newStartDate.getDate()).padStart(2, '0');
-			let newStartDateString = `${year}-${month}-${day}`;
-			startDateInput.value = newStartDateString;
-			startDate = startDateInput.value;
-			console.log("After setting endDateInput.value:", endDateInput.value);
 			setPlanetPositions();
 		}
 	}
@@ -152,14 +105,8 @@ endDateInput.addEventListener("blur", function () {
 		let newEndDate = new Date(endDate);
 		if (newEndDate > maxDate) {
 			newEndDate = new Date(maxDate);
-			year = newEndDate.getFullYear();
-			month = String(newEndDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-			day = String(newEndDate.getDate()).padStart(2, '0');
-			let newEndDateString = `${year}-${month}-${day}`;
-			endDateInput.value = newEndDateString;
-			endDate = endDateInput.value;
+			endDateInput.value = DateManager.dateToString(newEndDate);
 		}
-
 		setPlanetPositions();
 	}
 });
@@ -181,9 +128,27 @@ buttons.forEach((button) => {
 	}
 });
 
+const bodyScale = 10000;
+//Sun object will be at 0,0,0 so no need to include it in the planets array. Planetary objects' coords are calculated relative to the sun. 
+const SunObject = new Object3D.SphereObject('Sun', 0.004649 * bodyScale / 10, 128, 64, 0xff0000, true, camera, textureLoader);
+const skybox = new Object3D.SphereObject('Stars', 100000, 128, 64, 0x5500ff, false, camera, textureLoader);
+let focusBody = SunObject; //variable to track which object is the target of the camera
+
+const PlanetObjectsArray = [
+	new Object3D.SphereObject('Mercury', 0.0000163 * bodyScale, 128, 64, 0x0000ff, true, camera, textureLoader),
+	new Object3D.SphereObject('Venus', 0.0000405 * bodyScale, 128, 64, 0x00ff00, true, camera, textureLoader),
+	new Object3D.SphereObject('Earth', 0.0000426 * bodyScale, 128, 64, 0x00ff00, true, camera, textureLoader),
+	new Object3D.SphereObject('Mars', 0.0000227 * bodyScale, 128, 64, 0xff0000, true, camera, textureLoader),
+	new Object3D.SphereObject('Jupiter', 0.000467 * bodyScale, 128, 64, 0x550000, true, camera, textureLoader),
+	new Object3D.SphereObject('Saturn', 0.000389 * bodyScale, 128, 64, 0xffff11, true, camera, textureLoader),
+	new Object3D.SphereObject('Uranus', 0.000169 * bodyScale, 128, 64, 0xff00ff, true, camera, textureLoader),
+	new Object3D.SphereObject('Neptune', 0.000164 * bodyScale, 128, 64, 0x5500ff, true, camera, textureLoader),
+	new Object3D.SphereObject('Pluto', 0.0000163 * bodyScale, 128, 64, 0x5500ff, true, camera, textureLoader)
+];
+
 function setFocus(name) {
 	if (name === 'Sun') {
-		controls.target.set(0, 0, 0);
+		focusBody = SunObject;
 		console.log("sun selected");
 	}
 
@@ -194,32 +159,6 @@ function setFocus(name) {
 	}
 }
 
-const skybox = new Object.SphereObject('skybox', 100000, 128, 64, 0x5500ff, false, camera, textureLoader);
-
-const bodyScale = 10000;
-const PlanetObjectsArray = [
-	new Object.SphereObject('Mercury', 0.0000163 * bodyScale, 128, 64, 0x0000ff, true, camera, textureLoader),
-	new Object.SphereObject('Venus', 0.0000405 * bodyScale, 128, 64, 0x00ff00, true, camera, textureLoader),
-	new Object.SphereObject('Earth', 0.0000426 * bodyScale, 128, 64, 0x00ff00, true, camera, textureLoader),
-	new Object.SphereObject('Mars', 0.0000227 * bodyScale, 128, 64, 0xff0000, true, camera, textureLoader),
-	new Object.SphereObject('Jupiter', 0.000467 * bodyScale, 128, 64, 0x550000, true, camera, textureLoader),
-	new Object.SphereObject('Saturn', 0.000389 * bodyScale, 128, 64, 0xffff11, true, camera, textureLoader),
-	new Object.SphereObject('Uranus', 0.000169 * bodyScale, 128, 64, 0xff00ff, true, camera, textureLoader),
-	new Object.SphereObject('Neptune', 0.000164 * bodyScale, 128, 64, 0x5500ff, true, camera, textureLoader),
-	new Object.SphereObject('Pluto', 0.0000163 * bodyScale, 128, 64, 0x5500ff, true, camera, textureLoader)
-];
-
-//Sun object will be at 0,0,0 so no need to include it in the planets array. Planetary objects' coords are calculated relative to the sun. 
-const SunObject = new Object.SphereObject('Sun', 0.004649 * bodyScale / 10, 128, 64, 0xff0000, true, camera, textureLoader);
-
-controls.addEventListener('change', () => {
-	SunObject.updateLabel();
-	for (const Planet of PlanetObjectsArray) {
-		Planet.updateLabel();
-	}
-});
-
-let focusBody = SunObject;
 function spawnPlanetObjects() {
 	SunObject.addToScene(scene);
 	skybox.addToScene(scene);
@@ -232,7 +171,7 @@ function setPlanetPositions() {
 	const PlanetData = [];
 
 	for (let i = 1; i < PlanetObjectsArray.length + 1; i++) {
-		PlanetData.push(NASA.request(i, startDate, endDate));
+		PlanetData.push(NASA.request(i, startDateInput.value, endDateInput.value));
 	}
 
 	Promise.all(PlanetData)  //Promise is used to wait for all api requests to complete
