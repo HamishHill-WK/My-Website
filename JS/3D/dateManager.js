@@ -1,6 +1,5 @@
 export const startDateInput = document.getElementById("startDateInput");
 export const endDateInput = document.getElementById("endDateInput");
-import { setPlanetPositions } from "./main";
 
 const maxDateString = '2099-12-30';
 const maxDate = new Date(maxDateString);
@@ -13,6 +12,7 @@ startDateInput.value = dateToString(currentDate);
 
 currentDate.setDate(currentDate.getDate() + 1);
 endDateInput.value = dateToString(currentDate);
+console.log("date managher");
 
 startDateInput.addEventListener("blur", function () {
 	if (startDateInput.value >= endDateInput.value) {
@@ -29,8 +29,6 @@ startDateInput.addEventListener("blur", function () {
 		const newEndDate = new Date(startDateInput.value);
 		newEndDate.setDate(newEndDate.getDate() + 1);
 		endDateInput.value = dateToString(newEndDate);
-
-		setPlanetPositions(startDateInput.value, endDateInput.value);
 	}
 	else {
 		let newStartDate = new Date(startDateInput.value);
@@ -38,7 +36,6 @@ startDateInput.addEventListener("blur", function () {
 			newStartDate = new Date(minDate);
 			startDateInput.value = dateToString(newStartDate);
 		}
-		setPlanetPositions(startDateInput.value, endDateInput.value);
 	}
 });
 
@@ -52,14 +49,10 @@ endDateInput.addEventListener("blur", function () {
 
 			newStartDate.setDate(newStartDate.getDate() + 1);
 			endDateInput.value = dateToString(newStartDate);
-
-			setPlanetPositions(startDateInput.value, endDateInput.value);
 		}
 		else {
 			newStartDate.setDate(newStartDate.getDate() - 1);
 			startDateInput.value = dateToString(newStartDate);
-
-			setPlanetPositions(startDateInput.value, endDateInput.value);
 		}
 	}
 	else {
@@ -68,7 +61,6 @@ endDateInput.addEventListener("blur", function () {
 			newEndDate = new Date(maxDate);
 			endDateInput.value = DateManager.dateToString(newEndDate);
 		}
-		setPlanetPositions(startDateInput.value, endDateInput.value);
 	}
 });
 

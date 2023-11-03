@@ -3,13 +3,14 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import * as NASA from './NASAdata.js';
 import * as Object3D from './Object.js';
 import * as DateManager from './dateManager.js';
-import('./dateManager.js')
-	.then(() => {
-		init();	//init function called when date manager import is complete.
-	})
-	.catch((error) => {
-		console.error('Failed to load DateManager module:', error);
-	});
+//import { initDates, getStartDate, getEndDate } from './dateManager.js';
+//import('./dateManager.js')
+//	.then(() => {
+//		init();	//init function called when date manager import is complete.
+//	})
+//	.catch((error) => {
+//		console.error('Failed to load DateManager module:', error);
+//	});
 
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer();
@@ -36,10 +37,13 @@ controls.addEventListener('change', () => {	//when the camera moves the scale of
 	}
 });
 
-const light = new THREE.PointLight(0xffffff, 500, 4000);
-scene.add(light);
-const AmbientLight = new THREE.AmbientLight(0xffffff, 0.1);
-scene.add(AmbientLight);
+startDateInput.addEventListener("blur", function () {
+	setPlanetPositions(DateManager.startDateInput.value, DateManager.endDateInput.value);
+});
+
+endDateInput.addEventListener("blur", function () {
+	setPlanetPositions(DateManager.startDateInput.value, DateManager.endDateInput.value);
+});
 
 const buttons = document.querySelectorAll(".focusButton");
 
@@ -128,6 +132,10 @@ function animate() {
 }
 
 function init() {
+
 	setPlanetPositions(DateManager.startDateInput.value, DateManager.endDateInput.value);
 	animate();
+	console.log(`${DateManager.startDateInput.value} + ${ DateManager.endDateInput.value}`);
 }
+
+init();

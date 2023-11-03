@@ -84,10 +84,5 @@ export function cartesianCoords(longitude, latitude, distance, bodyScale) {	//fu
 	const y = distance * Math.sin(hEclLatRad);
 	const z = distance * Math.cos(hEclLatRad) * Math.sin(hEclLonRad);
 
-	const coordinates1 = [x, y, z];
-	const distance1 = Math.sqrt(
-		coordinates1[0] ** 2 + coordinates1[1] ** 2 + coordinates1[2] ** 2
-	);
-
 	return [x, y, z];
 }

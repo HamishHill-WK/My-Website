@@ -7,33 +7,55 @@ export class SphereObject {
 		this._camera = camera;
 		const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
 		let material = new THREE.MeshBasicMaterial({ color });
-		const pathToTexture = `${texturePath}${this.name}Texture.jpg`;
+		let pathToTexture = `${texturePath}${this.name}Texture.jpg`;
 		if (pathToTexture !== undefined) {
 			const texture = textureLoader.load(pathToTexture);
-			if (pathToTexture === `${texturePath}SunTexture.jpg`) {
+			if (this.name === 'Sun') {
 				material = new THREE.MeshStandardMaterial({
 					emissiveMap: texture,
 					emissive: new THREE.Color(1, 1, 1),
 				});
+				console.log("sun");
 			}
-			if (pathToTexture === `${texturePath}StarsTexture.jpg`) {
+			if (this.name === 'Stars') {
 				texture.wrapS = THREE.RepeatWrapping;
 				texture.wrapT = THREE.RepeatWrapping;
 				texture.repeat.set(4, 4);
 				material = new THREE.MeshBasicMaterial({
 					map: texture,
-					side: THREE.BackSide,
+					side: THREE.BackSide
 				});
 			}
 			else {
-				material = new THREE.MeshStandardMaterial({
-					emissiveMap: texture,
-					emissive: new THREE.Color(0.3, 0.3, 0.3),
+				material = new THREE.MeshBasicMaterial({
+					map: texture,
 				});
 			}
 		}
 
 		this.mesh = new THREE.Mesh(geometry, material);
+
+		if (this.name === 'Saturn') {	//if this object is saturn then instance it's ring
+			const geometry = new THREE.TorusGeometry(8, 3, 16, 100); 
+
+			pathToTexture = `${texturePath}${this.name}RingTexture.png`;
+			const ringTexture = textureLoader.load(pathToTexture);
+
+			ringTexture.rotation = Math.PI / 2;
+			ringTexture.wrapS = THREE.RepeatWrapping;
+			ringTexture.wrapT = THREE.RepeatWrapping;
+			ringTexture.repeat.set(4, 4);
+			const material = new THREE.MeshBasicMaterial({
+				map: ringTexture,
+				side: THREE.DoubleSide
+			});
+			const ringMesh = new THREE.Mesh(geometry, material);
+			ringMesh.rotateX(Math.PI / 2);
+			ringMesh.scale.set(1, 1, 0.05);
+			this.mesh.add(ringMesh);
+			console.log("ring");
+		}
+
 		scene.add(this.mesh);
 
 		if (label) {
@@ -69,6 +91,7 @@ export class SphereObject {
 	setPosition(x, y, z) {
 		this.mesh.position.set(x, y, z);
 		this.updateLabel();
+
 	}
 
 	get position() { return this.mesh.position; }
