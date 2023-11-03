@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 const texturePath = '../../Images/SolarSystem/';
 export class SphereObject {
-	constructor(newName, radius, widthSegments, heightSegments, color, label, camera, textureLoader) {
+	constructor(newName, radius, widthSegments, heightSegments, color, label, scene, camera, textureLoader) {
 		this._name = newName;
 		this._radius = radius;
 		this._camera = camera;
@@ -34,16 +34,18 @@ export class SphereObject {
 		}
 
 		this.mesh = new THREE.Mesh(geometry, material);
+		scene.add(this.mesh);
 
 		if (label) {
 			const labelTexture = textureLoader.load(`${texturePath}Labels/${this.name}Label.png`);
 			const labelMaterial = new THREE.SpriteMaterial({ map: labelTexture });
 			labelMaterial.opacity = 0.6;
-			this._labelSprite = new THREE.Sprite(labelMaterial);
+			const labelSprite = new THREE.Sprite(labelMaterial);
+			scene.add(labelSprite);
+			this._labelSprite = labelSprite;
 			this.labelSprite.center.set(0.5, 0);
 			this.labelSprite.position.set(this.position.x + radius / 2, this.position.y + radius + 1 / 2, this.position.z + radius / 2); // Set the 3D position
 			this.labelSprite.scale.set(5, 3, 1);
-			//this.updateLabel();
 		}
 	}
 

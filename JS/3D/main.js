@@ -3,6 +3,13 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import * as NASA from './NASAdata.js';
 import * as Object3D from './Object.js';
 import * as DateManager from './dateManager.js';
+import('./dateManager.js')
+	.then(() => {
+		init();	//init function called when date manager import is complete.
+	})
+	.catch((error) => {
+		console.error('Failed to load DateManager module:', error);
+	});
 
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer();
@@ -36,81 +43,6 @@ scene.add(AmbientLight);
 
 const buttons = document.querySelectorAll(".focusButton");
 
-const startDateInput = document.getElementById("startDateInput");
-const endDateInput = document.getElementById("endDateInput");
-
-const currentDate = new Date();
-startDateInput.value = DateManager.dateToString(currentDate);
-
-currentDate.setDate(currentDate.getDate() + 1);
-endDateInput.value = DateManager.dateToString(currentDate);
-
-const maxDateString = '2099-12-30';
-const maxDate = new Date(maxDateString);
-
-const minDateString = '1749-12-31T23:59:59';
-const minDate = new Date(minDateString);
-
-startDateInput.addEventListener("blur", function () {
-	// Get the input value
-	if (startDateInput.value >= endDateInput.value) {
-		const newStartDate = new Date(startDateInput.value); 
-
-		if (newStartDate > maxDate) {
-			const newStartDate = new Date(maxDate); 
-
-			newStartDate.setDate(newStartDate.getDate() - 1);
-
-			startDateInput.value = DateManager.dateToString(newStartDate);
-		}
-
-		const newEndDate = new Date(startDateInput.value);
-		newEndDate.setDate(newEndDate.getDate() + 1);
-		endDateInput.value = DateManager.dateToString(newEndDate);
-
-		setPlanetPositions();
-	}
-	else {
-		let newStartDate = new Date(startDateInput.value);
-		if (newStartDate < minDate) {
-			newStartDate = new Date(minDate);
-			startDateInput.value = DateManager.dateToString(newStartDate);
-		}
-		setPlanetPositions();
-	}
-});
-
-endDateInput.addEventListener("blur", function () {
-	if (endDateInput.value <= startDateInput.value) {
-		let newStartDate = new Date(endDate);
-
-		if (newStartDate < minDate) {
-			newStartDate = new Date(minDate);
-			startDateInput.value = DateManager.dateToString(newStartDate);
-
-			newStartDate.setDate(newStartDate.getDate() + 1);
-			endDateInput.value = DateManager.dateToString(newStartDate);
-
-			setPlanetPositions();
-		}
-		else {
-			newStartDate.setDate(newStartDate.getDate() - 1);
-			startDateInput.value = DateManager.dateToString(newStartDate);
-
-			setPlanetPositions();
-		}
-	}
-	else {
-		endDate = endDateInput.value;
-		let newEndDate = new Date(endDate);
-		if (newEndDate > maxDate) {
-			newEndDate = new Date(maxDate);
-			endDateInput.value = DateManager.dateToString(newEndDate);
-		}
-		setPlanetPositions();
-	}
-});
-
 buttons.forEach((button) => {
 	button.addEventListener("click", function () {
 		buttons.forEach((otherButton) => {
@@ -130,20 +62,20 @@ buttons.forEach((button) => {
 
 const bodyScale = 10000;
 //Sun object will be at 0,0,0 so no need to include it in the planets array. Planetary objects' coords are calculated relative to the sun. 
-const SunObject = new Object3D.SphereObject('Sun', 0.004649 * bodyScale / 10, 128, 64, 0xff0000, true, camera, textureLoader);
-const skybox = new Object3D.SphereObject('Stars', 100000, 128, 64, 0x5500ff, false, camera, textureLoader);
+const SunObject = new Object3D.SphereObject('Sun', 0.004649 * bodyScale / 10, 128, 64, 0xff0000, true, scene, camera, textureLoader);
+new Object3D.SphereObject('Stars', 100000, 128, 64, 0x5500ff, false, scene, camera, textureLoader);	//skybox object 
 let focusBody = SunObject; //variable to track which object is the target of the camera
 
 const PlanetObjectsArray = [
-	new Object3D.SphereObject('Mercury', 0.0000163 * bodyScale, 128, 64, 0x0000ff, true, camera, textureLoader),
-	new Object3D.SphereObject('Venus', 0.0000405 * bodyScale, 128, 64, 0x00ff00, true, camera, textureLoader),
-	new Object3D.SphereObject('Earth', 0.0000426 * bodyScale, 128, 64, 0x00ff00, true, camera, textureLoader),
-	new Object3D.SphereObject('Mars', 0.0000227 * bodyScale, 128, 64, 0xff0000, true, camera, textureLoader),
-	new Object3D.SphereObject('Jupiter', 0.000467 * bodyScale, 128, 64, 0x550000, true, camera, textureLoader),
-	new Object3D.SphereObject('Saturn', 0.000389 * bodyScale, 128, 64, 0xffff11, true, camera, textureLoader),
-	new Object3D.SphereObject('Uranus', 0.000169 * bodyScale, 128, 64, 0xff00ff, true, camera, textureLoader),
-	new Object3D.SphereObject('Neptune', 0.000164 * bodyScale, 128, 64, 0x5500ff, true, camera, textureLoader),
-	new Object3D.SphereObject('Pluto', 0.0000163 * bodyScale, 128, 64, 0x5500ff, true, camera, textureLoader)
+	new Object3D.SphereObject('Mercury', 0.0000163 * bodyScale, 128, 64, 0x0000ff, true, scene, camera, textureLoader),
+	new Object3D.SphereObject('Venus', 0.0000405 * bodyScale, 128, 64, 0x00ff00, true, scene, camera, textureLoader),
+	new Object3D.SphereObject('Earth', 0.0000426 * bodyScale, 128, 64, 0x00ff00, true, scene, camera, textureLoader),
+	new Object3D.SphereObject('Mars', 0.0000227 * bodyScale, 128, 64, 0xff0000, true, scene, camera, textureLoader),
+	new Object3D.SphereObject('Jupiter', 0.000467 * bodyScale, 128, 64, 0x550000, true, scene, camera, textureLoader),
+	new Object3D.SphereObject('Saturn', 0.000389 * bodyScale, 128, 64, 0xffff11, true, scene, camera, textureLoader),
+	new Object3D.SphereObject('Uranus', 0.000169 * bodyScale, 128, 64, 0xff00ff, true, scene, camera, textureLoader),
+	new Object3D.SphereObject('Neptune', 0.000164 * bodyScale, 128, 64, 0x5500ff, true, scene, camera, textureLoader),
+	new Object3D.SphereObject('Pluto', 0.0000163 * bodyScale, 128, 64, 0x5500ff, true, scene, camera, textureLoader)
 ];
 
 function setFocus(name) {
@@ -159,19 +91,11 @@ function setFocus(name) {
 	}
 }
 
-function spawnPlanetObjects() {
-	SunObject.addToScene(scene);
-	skybox.addToScene(scene);
-	for (const Planet of PlanetObjectsArray) {
-		Planet.addToScene(scene);
-	}
-}
-
-function setPlanetPositions() {
+export function setPlanetPositions(startDate, endDate) {
 	const PlanetData = [];
 
 	for (let i = 1; i < PlanetObjectsArray.length + 1; i++) {
-		PlanetData.push(NASA.request(i, startDateInput.value, endDateInput.value));
+		PlanetData.push(NASA.request(i, startDate, endDate));
 	}
 
 	Promise.all(PlanetData)  //Promise is used to wait for all api requests to complete
@@ -204,9 +128,6 @@ function animate() {
 }
 
 function init() {
-	spawnPlanetObjects();
-	setPlanetPositions();
+	setPlanetPositions(DateManager.startDateInput.value, DateManager.endDateInput.value);
 	animate();
 }
-
-init();
