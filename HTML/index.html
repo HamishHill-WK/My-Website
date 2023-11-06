@@ -2,13 +2,9 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>My first three.js app</title>
+	<title>SolarSystem</title>
 	<link rel="stylesheet" type="text/css" href="../CSS/mystyles.css" />
-	<style>
-		#threejs-container {
-			margin: 0;
-		}
-	</style>
+	<link rel="stylesheet" type="text/css" href="../CSS/solarstyles.css" />
 </head>
 <body>
 	<div id="wrapper">
@@ -24,7 +20,7 @@
 			<div id="navigationwrap">
 				<div id="navigation">
 					<nav>
-						<a class="anav" href="home.htm">Home</a> &nbsp; <a class="anav" href="Contact.htm">Contact Info</a>  &nbsp;  <a class="anav" href="Projects.htm">Projects</a>
+						<a class="anav" href="home.html">Home</a> &nbsp; <a class="anav" href="Contact.html">Contact Info</a>  &nbsp;  <a class="anav" href="Projects.html">Projects</a>
 					</nav>
 				</div>
 				<div id="sociallinks">
@@ -33,7 +29,22 @@
 			</div>
 		</div>
 	</div>
-	<div id="threejs-container"></div>
+	<div id="threejs-container">
+		<div id="overlay">
+			<button class="focusButton">Sun</button>
+			<button class="focusButton">Mercury</button>
+			<button class="focusButton">Venus</button>
+			<button class="focusButton">Earth</button>
+			<button class="focusButton">Mars</button>
+			<button class="focusButton">Jupiter</button>
+			<button class="focusButton">Saturn</button>
+			<button class="focusButton">Uranus</button>
+			<button class="focusButton">Neptune</button>
+			<button class="focusButton">Pluto</button> <br />
+			<input type="date" id="startDateInput">
+			<input type="date" id="endDateInput">
+		</div>
+	</div>
 	<script type="module" src="../JS/3D/main.js"></script>
 </body>
 </html>

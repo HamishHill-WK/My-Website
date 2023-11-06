@@ -75,7 +75,11 @@ export function getData(data) {	//function to extract necessary data from json f
 
 export function cartesianCoords(longitude, latitude, distance, bodyScale) {	//function to convert heliocentric longitude, latitude and distance from the sun to cartesian coordinates.
 	distance = parseFloat(distance);
-	distance = distance * bodyScale / 500;
+	distance = distance * bodyScale / 200;	//Because we have already scaled up our celestial bodies
+											//it is neccessary to increase the distances as well.
+											//However, the distances are increased by a lesser factor than scale of the objects
+											//to prevent the scene from becoming too large and the planets being too far away to be seen.
+											//If you wanted to make this simulation more scientifically accurate then the distance should be increased at the same rate as body scale.
 
 	const hEclLonRad = longitude * (Math.PI / 180);
 	const hEclLatRad = latitude * (Math.PI / 180);

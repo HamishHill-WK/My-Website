@@ -3,14 +3,6 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import * as NASA from './NASAdata.js';
 import * as Object3D from './Object.js';
 import * as DateManager from './dateManager.js';
-//import { initDates, getStartDate, getEndDate } from './dateManager.js';
-//import('./dateManager.js')
-//	.then(() => {
-//		init();	//init function called when date manager import is complete.
-//	})
-//	.catch((error) => {
-//		console.error('Failed to load DateManager module:', error);
-//	});
 
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer();
@@ -26,7 +18,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.listenToKeyEvents(renderer.domElement);
 controls.enableDamping = true;
 controls.enablePan = false;
-controls.minDistance = 5;	//prevents zooming inside target object
+//controls.minDistance = 5;	//prevents zooming inside target object
 controls.maxDistance = 1000;
 controls.minPolarAngle = Math.PI / 3;	//min vertical angle set to 60 degrees
 controls.maxPolarAngle = 2 * Math.PI / 3;	//max vertical angle set to 120 degrees
@@ -64,13 +56,16 @@ buttons.forEach((button) => {
 	}
 });
 
-const bodyScale = 10000;
-//Sun object will be at 0,0,0 so no need to include it in the planets array. Planetary objects' coords are calculated relative to the sun. 
-const SunObject = new Object3D.SphereObject('Sun', 0.004649 * bodyScale / 10, 128, 64, 0xff0000, true, scene, camera, textureLoader);
 new Object3D.SphereObject('Stars', 100000, 128, 64, 0x5500ff, false, scene, camera, textureLoader);	//skybox object 
-let focusBody = SunObject; //variable to track which object is the target of the camera
 
-const PlanetObjectsArray = [
+const bodyScale = 10000;	//Due to the extreme difference in size all bodies in the solar system have been increased in order to make them visible in this simulation.
+							//While this does make the simulation less accurate, it is necessary sacrifice for the purpose of this project. 
+															//The sun object scale is increased by a reduced factor due to the extreme difference of size in the bodies  
+const SunObject = new Object3D.SphereObject('Sun', 0.004649 * bodyScale /10, 128, 64, 0xff0000, true, scene, camera, textureLoader);
+let focusBody = SunObject; //variable to track which object is the target of the camera
+//Sun object will be at 0,0,0 so no need to include it in the planets array. Planetary objects' coords are calculated relative to the sun. 
+
+const PlanetObjectsArray = [			//the sizes used are the radii of each body converted into Astronomical Units from Km. This is to maintain consistency with the data received from NASA, which is given in AU.
 	new Object3D.SphereObject('Mercury', 0.0000163 * bodyScale, 128, 64, 0x0000ff, true, scene, camera, textureLoader),
 	new Object3D.SphereObject('Venus', 0.0000405 * bodyScale, 128, 64, 0x00ff00, true, scene, camera, textureLoader),
 	new Object3D.SphereObject('Earth', 0.0000426 * bodyScale, 128, 64, 0x00ff00, true, scene, camera, textureLoader),
@@ -132,10 +127,8 @@ function animate() {
 }
 
 function init() {
-
 	setPlanetPositions(DateManager.startDateInput.value, DateManager.endDateInput.value);
 	animate();
-	console.log(`${DateManager.startDateInput.value} + ${ DateManager.endDateInput.value}`);
 }
 
 init();

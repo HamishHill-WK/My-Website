@@ -10,13 +10,6 @@ export class SphereObject {
 		let pathToTexture = `${texturePath}${this.name}Texture.jpg`;
 		if (pathToTexture !== undefined) {
 			const texture = textureLoader.load(pathToTexture);
-			if (this.name === 'Sun') {
-				material = new THREE.MeshStandardMaterial({
-					emissiveMap: texture,
-					emissive: new THREE.Color(1, 1, 1),
-				});
-				console.log("sun");
-			}
 			if (this.name === 'Stars') {
 				texture.wrapS = THREE.RepeatWrapping;
 				texture.wrapT = THREE.RepeatWrapping;
@@ -49,11 +42,11 @@ export class SphereObject {
 				map: ringTexture,
 				side: THREE.DoubleSide
 			});
+			material.transparent = true;
 			const ringMesh = new THREE.Mesh(geometry, material);
 			ringMesh.rotateX(Math.PI / 2);
 			ringMesh.scale.set(1, 1, 0.05);
 			this.mesh.add(ringMesh);
-			console.log("ring");
 		}
 
 		scene.add(this.mesh);
