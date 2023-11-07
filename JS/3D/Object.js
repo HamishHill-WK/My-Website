@@ -121,6 +121,19 @@ export class Planet extends SphereObject {
 		}
 	}
 
+	renderOrbit(scene) {
+		const positions = [];
+		for (let i = 0; i < this.orbitPath.length; i++) {
+			positions.push(new THREE.Vector3(this.orbitPath[i][0][0], this.orbitPath[i][0][1], this.orbitPath[i][0][2]));
+		}
+
+		const orbitGeometry = new THREE.BufferGeometry().setFromPoints(positions); // 100 segments
+		const orbitMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+
+		const orbitLine = new THREE.Line(orbitGeometry, orbitMaterial);
+		scene.add(orbitLine);		
+	}
+
 	get orbitPath() { return this._orbitPath; }
 	set orbitPath(newOrbitPath) { this._orbitPath = newOrbitPath; }
 
@@ -144,3 +157,4 @@ export class Planet extends SphereObject {
 		}
 	}
 }
+

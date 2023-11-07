@@ -22,7 +22,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.listenToKeyEvents(renderer.domElement);
 controls.enableDamping = true;
 controls.enablePan = false;
-controls.minDistance = 5;	//prevents zooming inside target object
+///controls.minDistance = 5;	//prevents zooming inside target object
 controls.maxDistance = 500;
 controls.minPolarAngle = Math.PI / 3;	//min vertical angle set to 60 degrees
 controls.maxPolarAngle = 2 * Math.PI / 3;	//max vertical angle set to 120 degrees
@@ -126,6 +126,7 @@ function requestPlanetPositionData(startDate, endDate) {
 		.then(rawData => {
 			for (let i = 0; i < rawData.length; i++) {
 				PlanetObjectsArray[i].orbitPath = NASA.getData(rawData[i]);
+				PlanetObjectsArray[i].renderOrbit(scene);
 			}
 		})
 		.catch(error => {
@@ -141,7 +142,6 @@ function animate() {
 	stats.update()
 	if (currentDateSelected === false) {
 		DateManager.currentDateInput.value = PlanetObjectsArray[0].getCurrentDate();
-		console.log(DateManager.currentDateInput.value);
 	}
 
 	if (!pauseSimulation) {
