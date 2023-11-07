@@ -1,0 +1,14 @@
+2099 - 12 - 30 
+1749 - 12 - 31
+
+350 years * 365  = 127,75
+
+7 * 12 + 1 = 85 leap years = 85 extra days 
+
+total data = 127,835 days
+
+max length = 90,024 days
+
+days w/o leaps = max length - 85 = 89,939
+
+years = days / 365 = 246.408

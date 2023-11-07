@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hamish Hill Developer Portfolio</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../CSS/mystyles.css" />
+    <link rel="stylesheet" type="text/css" href="../CSS/moonstyles.css" />
+
+</head>
+<body>
+    <div id="wrapper">
+        <div id="topbar">
+            <div id="headerwrap">
+                <div id="header">
+                    <p>
+                        Hamish Hill<br />
+                        Developer Portfolio
+                    </p>
+                </div>
+            </div>
+            <div id="navigationwrap">
+                <div id="navigation">
+                    <nav>
+                        <a class="anav" href="home.html">Home</a> &nbsp; <a class="anav" href="Contact.html">Contact Info</a> &nbsp; <a class="anav" href="Projects.html">Projects</a>
+                    </nav>
+                </div>
+                <div id="sociallinks">
+                    <a class="anav" href=https://www.linkedin.com/in/hamish-hill-253a05199/ target="_blank">Linkedin</a> &nbsp; <a class="anav" href=https://github.com/HamishHill-WK target="_blank">GitHub</a>
+                </div>
+            </div>
+        </div>
+
+        <section id="moon-current">
+            <h2>Current Moon Data</h2>
+            <p>Current data on the moon, including the image below, is supplied by NASA's Moon Phase and Libration API available <a href="https://svs.gsfc.nasa.gov/5048" target="_blank">here</a></p>
+            <div id="moonwrap">
+                <img id="moonimage" src="../Images/Moon/default.png" alt="Loading Moon Data">
+                <p id="current-phase">Current Phase: loading...</p>
+                <p id="current-illumination">Illumination: loading...</p>
+                <p id="current-age">Age: loading...</p>                
+                <p id="current-distance">Distance from Earth: loading...</p>
+            </div>
+        </section>
+
+        <section id="moon-phases">
+            <div id="contentwrap">
+                <div id="content">
+                    <h2>Moon Phases</h2>
+
+                    <article id="new-moon" class="phase-article">
+                        <h3 id="new-moon-title" class="phase-title" onclick="toggleContent('new-moon-content', 'new-moon-title')">
+                            New Moon <img id="moon-icon" src="../Images/Moon/New.png" alt="New Moon Icon" />
+                        </h3>
+                        <div id="new-moon-content" class="moon-phase-content">
+                            <p>Illumination: 0%</p>
+                            <p>The New Moon marks the beginning of a new lunar cycle. </p>
+                            <p>During the New Moon, the Moon is situated between the Earth and the Sun with its illuminated side facing away from Earth. Thus during this phase the Moon is invisible from Earth.</p>
+                            <p>The New Moon is an ideal time for astronomers to observe the night sky. Celestial bodies will not be obscured by the light reflected from the Moon.</p>
+                        </div>
+                    </article>
+
+                    <article id="waxing-crescent" class="phase-article">
+                        <h3 id="waxing-crescent-title" class="phase-title" onclick="toggleContent('waxing-crescent-content', 'waxing-crescent-title')">
+                            Waxing Crescent <img id="moon-icon" src="../Images/Moon/WaxCre.png" alt="New Moon Icon" />
+                        </h3>
+                        <div id="waxing-crescent-content" class="moon-phase-content">
+                            <p>Illumination: 1 - 49%</p>
+                            <p>During this phase, you can sometimes see not only the illuminated part of the moon but also the faint outline of the rest of the moon's disk. This is due to a phenomenon called "earthshine," where sunlight is reflected off the Earth and onto the moon, providing a soft glow that gently illuminates the dark side of the crescent Moon.</p>
+                            <p>Like the New Moon, the Waxing Crescent Moon is a perfect time for astronomers to observe celestial objects. With a thin crescent moon in the sky, there's less moonlight to interfere with the visibility of stars, planets, and deep-sky objects like galaxies and nebulae. This makes it an excellent opportunity to explore the night sky and discover various astronomical wonders.</p>
+                        </div>
+                    </article>
+
+                    <article id="first-quarter" class="phase-article">
+                        <h3 id="first-quarter-title" class="phase-title" onclick="toggleContent('first-quarter-content', 'first-quarter-title')">
+                            First Quarter <img id="moon-icon" src="../Images/Moon/FirstQuart.png" alt="New Moon Icon" />
+                        </h3>
+                        <div id="first-quarter-content" class="moon-phase-content">
+                            <p>Illumination: 50%</p>
+                            <p>The First Quarter moon phase is characterized by the moon being exactly one-quarter illuminated.</p>
+                            <p>During the First Quarter moon phase, the moon rises at noon and sets at midnight, making it visible in the afternoon and early evening sky.</p>
+                            <p>During the Third Quarter phase, the Moon is positioned at a right angle to the Sun and Earth. From Earth, the right side of the Moon's visible face is illuminated.</p>
+                            <p>This phase is an excellent time for observing lunar features because the sunlight creates long shadows along the terminator, the line between the lit and dark parts of the moon's surface. These shadows make lunar craters, mountains, and other details stand out, providing a fascinating view for amateur astronomers and lunar observers.</p>
+                        </div>
+                    </article>
+
+                    <article id="waxing-gibbous" class="phase-article">
+                        <h3 id="waxing-gibbous-title" class="phase-title" onclick="toggleContent('waxing-gibbous-content', 'waxing-gibbous-title')">
+                            Waxing Gibbous <img id="moon-icon" src="../Images/Moon/WaxGib.png" alt="New Moon Icon" />
+                        </h3>
+                        <div id="waxing-gibbous-content" class="moon-phase-content">
+                            <p>Illumination: 51 - 99%</p>
+                            <p>The Waxing Gibbous moon phase occurs when the moon is more than half illuminated but not yet full. It is the phase between the First Quarter and Full Moon.</p>
+                            <p>During the Waxing Gibbous Phase, the Moon is bright and nearly full providing much more moonlight at night. This phase is ideal for night time photography.</p>
+                        </div>
+                    </article>
+
+                    <article id="full-moon" class="phase-article">
+                        <h3 id="full-moon-title" class="phase-title" onclick="toggleContent('full-moon-content', 'full-moon-title')">
+                            Full Moon <img id="moon-icon" src="../Images/Moon/Full.png" alt="New Moon Icon" />
+                        </h3>
+                        <div id="full-moon-content" class="moon-phase-content">
+                            <p>Illumination: 100%</p>
+                            <p>The Full Moon phase occurs when the entire face of the moon is illuminated by the Sun. It appears as a perfect circle in the night sky.</p>
+                            <p> A Full Moon occurs approximately once every month as the moon completes one orbit around Earth.</p>
+                            <p>Lunar eclipses occur during a Full Moon when the Earth casts its shadow on the moon, giving it a reddish or coppery appearance.</p>
+                            <p>The Full Moon is the time when the Moon is at it's brightest making it ideal for night time activity.</p>
+                        </div>
+                    </article>
+
+                    <article id="waning-gibbous" class="phase-article">
+                        <h3 id="waning-gibbous-title" class="phase-title" onclick="toggleContent('waning-gibbous-content', 'waning-gibbous-title')">
+                            Waning Gibbous <img id="moon-icon" src="../Images/Moon/WanGib.png" alt="New Moon Icon" />
+                        </h3>
+                        <div id="waning-gibbous-content" class="moon-phase-content">
+                            <p>Illumination: 51 - 99%</p>
+                            <p>The Waning Gibbous Moon is the lunar phase that occurs after the Full Moon and before the Third Quarter Moon. During this phase, more than half, but not all, of the moon's face is still illuminated by the Sun..</p>
+                            <p>Waning Gibbous Moons are often visible in the morning sky. They rise in the eastern horizon after midnight and remain visible during the early morning hours.</p>
+                            <p>Like the Waxing Gibbous and Full Moon phases, the Waning Gibbous phase provides greater levels of illumination, making it ideal for night time activity.</p>
+                        </div>
+                    </article>
+
+                    <article id="third-quarter" class="phase-article">
+                        <h3 id="third-quarter-title" class="phase-title" onclick="toggleContent('third-quarter-content', 'third-quarter-title')">
+                            Third Quarter <img id="moon-icon" src="../Images/Moon/ThirdQuart.png" alt="New Moon Icon" />
+                        </h3>
+                        <div id="third-quarter-content" class="moon-phase-content">
+                            <p>Illumination: 50%</p>
+                            <p>The Moon appears as a half-circle or semicircle. It is also sometimes referred to as a "Last Quarter" because it is the last of the four primary phases.</p>
+                            <p>During the Third Quarter phase, the Moon is positioned at a right angle to the Sun and Earth. From Earth, the left side of the Moon's visible face is illuminated.</p>
+                        </div>
+                    </article>
+
+                    <article id="waning-crescent" class="phase-article">
+                        <h3 id="waning-crescent-title" class="phase-title" onclick="toggleContent('waning-crescent-content', 'waning-crescent-title')">
+                            Waning Crescent <img id="moon-icon" src="../Images/Moon/WanCre.png" alt="New Moon Icon" />
+                        </h3>
+                        <div id="waning-crescent-content" class="moon-phase-content">
+                            <p>Illumination: 1 - 49%</p>
+                            <p>The Waning Crescent Moon is most often visible in the early morning sky, shortly before sunrise.</p>
+                            <p>The Waning Crescent represents the final stages of the lunar cycle before the New Moon. It marks the end of the Moon's visible presence in the morning sky.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+    </div>
+    <footer>
+        <div id="footerwrap">
+            <div id="footer">
+                <p>
+                    Hamish Hill<br />
+                    hamhilldev@gmail.com<br />
+                    <a href="../Download/.pdf" download>Download CV.pdf</a><br />
+                    <a href="../Download/.docx" download>Download CV.docx</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+    <script src="../JS/moondata.js"></script>
+</body>
+</html>
