@@ -1,12 +1,14 @@
+//main script for solar system simulation made using three.js 
+//go to HTML/index.html for the html file. 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import * as NASA from './NASAdata.js';
 import * as Object3D from './Object.js';
 import * as DateManager from './dateManager.js';
-import Stats from 'three/examples/jsm/libs/stats.module';
+//import Stats from 'three/examples/jsm/libs/stats.module';
 
-const stats = new Stats()
-document.body.appendChild(stats.dom)
+//const stats = new Stats()
+//document.body.appendChild(stats.dom)
 
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer();
@@ -139,7 +141,7 @@ function animate() {
 	const pos = focusBody.position;
 	controls.target.set(pos.x, pos.y, pos.z);
 	controls.update();
-	stats.update()
+	//stats.update()
 	if (currentDateSelected === false) {
 		DateManager.currentDateInput.value = PlanetObjectsArray[0].getCurrentDate();
 	}
