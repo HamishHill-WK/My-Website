@@ -84,7 +84,6 @@ export class SphereObject {
 	setPosition(x, y, z) {
 		this.mesh.position.set(x, y, z);
 		this.updateLabel();
-
 	}
 
 	get position() { return this.mesh.position; }
@@ -97,4 +96,51 @@ export class SphereObject {
 	get camera() { return this._camera; }
 
 	setScale(x, y, z) { this.mesh.scale.set(x, y, z); }
+}
+
+export class Planet extends SphereObject {
+	constructor(newName, radius, widthSegments, heightSegments, color, label, scene, camera, textureLoader) {
+		super(newName, radius, widthSegments, heightSegments, color, label, scene, camera, textureLoader);
+		this._orbitPath = [];
+		this._pathIndex = 0;
+	}
+
+	update() {
+		if (this.orbitPath[this.pathIndex] !== undefined) {
+			this.pathIndex += 1;
+			if (this.pathIndex >= this.orbitPath.length) {
+				this.pathIndex = 0;
+			}
+			this.setPosition(this.orbitPath[this.pathIndex][0][0], this.orbitPath[this.pathIndex][0][1], this.orbitPath[this.pathIndex][0][2]);
+		}
+	}
+
+	getCurrentDate() {
+		if (this.orbitPath[this.pathIndex] !== undefined) {
+			return String(this.orbitPath[this.pathIndex][1]);
+		}
+	}
+
+	get orbitPath() { return this._orbitPath; }
+	set orbitPath(newOrbitPath) { this._orbitPath = newOrbitPath; }
+
+	get pathIndex() { return this._pathIndex; }
+
+	set pathIndex(newIndex) {
+		if (String(newIndex).match(/^\d{4}-\d{2}-\d{2}$/)) {
+			for (let i = 0; i < this.orbitPath.length; i++) {
+				if (this.orbitPath[i][1] === newIndex) {
+					if (i > 0) {
+						this._pathIndex = i - 1;
+					}
+					else {
+						this._pathIndex = this.orbitPath.length;
+					}
+				}
+			}
+		}
+		else {
+			this._pathIndex = newIndex;
+		}
+	}
 }

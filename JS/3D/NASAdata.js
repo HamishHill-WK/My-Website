@@ -52,9 +52,9 @@ let currentAttempts = 0;
 
 export function getData(data) {	//function to extract necessary data from json file received in api request
 	const lines = data.result.split('\n');
-	//console.log(data);
 	let isInsideBlock = false;
 	const extractedLines = [];
+	const cartesianPositions = [];
 
 	for (const line of lines) {
 		if (line.trim() === '$$SOE') {	//the relevant data can be found between between these character codes
@@ -65,17 +65,24 @@ export function getData(data) {	//function to extract necessary data from json f
 			extractedLines.push(line);
 		}
 	}
-
 	
-	//console.log(extractedLines);
-
-	//extracts all numeric values (including integers and floating-point numbers) from the first line of the extractedLines array 
-	return extractedLines[0].match(/[-+]?[0-9]*\.?[0-9]+/g);
+	for (const line of extractedLines) {		
+		let extractedDate = String(line.substr(0, 11));
+		const extractedYear = line.substr(1, 5);
+		const extractedMonth = monthAbbreviationToNumber(String(extractedDate[6] + extractedDate[7] + extractedDate[8]));
+		let extractedDay = parseInt(line.substr(9, 10)) * -1;
+		extractedDay = String(extractedDay).padStart(2, '0');
+		extractedDate = `${extractedYear}${extractedMonth}-${extractedDay}`;
+		const numericValues = line.match(/[-+]?[0-9]*\.?[0-9]+/g);
+		cartesianPositions.push([cartesianCoords(numericValues[4], numericValues[5], numericValues[6]), extractedDate]);
+	}
+	console.log(cartesianPositions);
+	return cartesianPositions;
 }
 
-export function cartesianCoords(longitude, latitude, distance, bodyScale) {	//function to convert heliocentric longitude, latitude and distance from the sun to cartesian coordinates.
+export function cartesianCoords(longitude, latitude, distance) {	//function to convert heliocentric longitude, latitude and distance from the sun to cartesian coordinates.
 	distance = parseFloat(distance);
-	distance = distance * bodyScale / 200;	//Because we have already scaled up our celestial bodies
+	distance = distance * 50;	//Because we have already scaled up our celestial bodies
 											//it is neccessary to increase the distances as well.
 											//However, the distances are increased by a lesser factor than scale of the objects
 											//to prevent the scene from becoming too large and the planets being too far away to be seen.
@@ -89,4 +96,23 @@ export function cartesianCoords(longitude, latitude, distance, bodyScale) {	//fu
 	const z = distance * Math.cos(hEclLatRad) * Math.sin(hEclLonRad);
 
 	return [x, y, z];
+}
+
+function monthAbbreviationToNumber(abbreviation) {
+	const monthMap = {
+		Jan: '01',
+		Feb: '02',
+		Mar: '03',
+		Apr: '04',
+		May: '05',
+		Jun: '06',
+		Jul: '07',
+		Aug: '08',
+		Sep: '09',
+		Oct: '10',
+		Nov: '11',
+		Dec: '12'
+	};
+
+	return monthMap[abbreviation];
 }

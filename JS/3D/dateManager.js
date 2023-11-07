@@ -1,4 +1,5 @@
 export const startDateInput = document.getElementById("startDateInput");
+export const currentDateInput = document.getElementById("currentDateInput");
 export const endDateInput = document.getElementById("endDateInput");
 
 const maxDateString = '2099-12-30';
@@ -8,18 +9,19 @@ const minDateString = '1749-12-31T23:59:59';
 const minDate = new Date(minDateString);
 
 const currentDate = new Date();
+currentDate.setDate(currentDate.getDate() - 365 * 10);
 startDateInput.value = dateToString(currentDate);
+currentDateInput.value = startDateInput.value;
 
-currentDate.setDate(currentDate.getDate() + 1);
+currentDate.setDate(currentDate.getDate() + 365 * 20);
 endDateInput.value = dateToString(currentDate);
-console.log("date managher");
 
 startDateInput.addEventListener("blur", function () {
 	if (startDateInput.value >= endDateInput.value) {
 		const newStartDate = new Date(startDateInput.value);
 
 		if (newStartDate > maxDate) {
-			const newStartDate = new Date(maxDate);
+			const newStartDate = maxDate;
 
 			newStartDate.setDate(newStartDate.getDate() - 1);
 
@@ -33,9 +35,20 @@ startDateInput.addEventListener("blur", function () {
 	else {
 		let newStartDate = new Date(startDateInput.value);
 		if (newStartDate < minDate) {
-			newStartDate = new Date(minDate);
+			newStartDate = minDate;
 			startDateInput.value = dateToString(newStartDate);
 		}
+	}
+});
+
+currentDateInput.addEventListener("blur", function () {
+	console.log("you input " + currentDateInput);
+	if (currentDateInput.value > endDateInput.value) {
+		currentDateInput.value = endDateInput.value;
+	}
+
+	if (currentDateInput.value < startDateInput.value) {
+		currentDateInput.value = startDateInput.value;
 	}
 });
 
@@ -44,7 +57,7 @@ endDateInput.addEventListener("blur", function () {
 		let newStartDate = new Date(endDateInput.value);
 
 		if (newStartDate < minDate) {
-			newStartDate = new Date(minDate);
+			newStartDate = minDate;
 			startDateInput.value = dateToString(newStartDate);
 
 			newStartDate.setDate(newStartDate.getDate() + 1);
@@ -58,8 +71,8 @@ endDateInput.addEventListener("blur", function () {
 	else {
 		let newEndDate = new Date(endDateInput.value);
 		if (newEndDate > maxDate) {
-			newEndDate = new Date(maxDate);
-			endDateInput.value = DateManager.dateToString(newEndDate);
+			newEndDate = maxDate;
+			endDateInput.value = dateToString(newEndDate);
 		}
 	}
 });
