@@ -90,8 +90,13 @@ const pauseButton = document.getElementById("pauseButton");
 
 pauseButton.addEventListener("click", function () {
 	pauseSimulation = !pauseSimulation;
+	if (pauseSimulation) {
+		pauseButton.textContent = "Play";
+	}
+	else {
+		pauseButton.textContent = "Pause";
+	}
 });
-
 
 new Object3D.SphereObject('Stars', 100000, 128, 64, 0x5500ff, false, scene, camera, textureLoader);	//skybox object 
 
