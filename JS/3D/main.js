@@ -12,13 +12,22 @@ import * as DateManager from './dateManager.js';
 
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+
+window.addEventListener('resize', resizeWindow);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000);
+camera.position.set(0, 0, 30);
+scene.add(camera);
+
+function resizeWindow() {
+
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+}
+
 const textureLoader = new THREE.TextureLoader();
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000);
-camera.position.set(0, 0, 30); 
-scene.add(camera);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.listenToKeyEvents(renderer.domElement);
@@ -156,6 +165,7 @@ function animate() {
 }
 
 function init() {
+	resizeWindow();
 	requestPlanetPositionData(DateManager.startDateInput.value, DateManager.endDateInput.value);
 	animate();
 }
